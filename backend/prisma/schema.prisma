@@ -1,0 +1,243 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ENUMS
+
+enum MealCategory {
+  BREAKFAST   // desayuno
+  LUNCH       // almuerzo
+  DINNER      // cena
+  SNACK       // snack
+  DESSERT     // postre
+  DRINK       // bebida
+  APPETIZER   // entrada
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum Unit {
+  // Peso
+  GRAM
+  KILOGRAM
+  OUNCE
+  POUND
+  // Volumen
+  MILLILITER
+  LITER
+  TEASPOON
+  TABLESPOON
+  CUP
+  FLUID_OUNCE
+  // Conteo
+  UNIT        // "2 huevos", "1 cebolla"
+  SLICE
+  PINCH
+  TO_TASTE    // "sal a gusto"
+}
+
+
+// USER
+model User {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  username       String   @unique
+  displayName    String
+  passwordHash   String?  // null si usa OAuth
+  avatarUrl      String?
+  bio            String?
+  isVerified     Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relaciones
+  recipes        Recipe[]       @relation("AuthoredRecipes")
+  savedRecipes   SavedRecipe[]
+  comments       Comment[]
+  ratings        Rating[]
+  fridgeItems    FridgeItem[]
+
+  // Sistema social (self-relation N:N)
+  following      Follow[]       @relation("Follower")
+  followers      Follow[]       @relation("Following")
+
+  @@index([email])
+  @@index([username])
+}
+
+// Follow es una tabla intermedia
+// para poder agregar createdAt y otros campos en el futuro
+model Follow {
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+
+  follower    User @relation("Follower",  fields: [followerId],  references: [id], onDelete: Cascade)
+  following   User @relation("Following", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@id([followerId, followingId])  // clave compuesta
+  @@index([followerId])
+  @@index([followingId])
+}
+
+// MEAL & RECIPE
+model Meal {
+  id          String       @id @default(cuid())
+  name        String       @unique  // "Pizza", "Risotto", "Cheesecake"
+  category    MealCategory
+  imageUrl    String?
+  createdAt   DateTime     @default(now())
+
+  recipes     Recipe[]
+
+  @@index([category])
+}
+
+model Recipe {
+  id               String     @id @default(cuid())
+  title            String
+  description      String
+  isPublic         Boolean    @default(true)
+  difficulty       Difficulty @default(EASY)
+  prepTimeMinutes  Int        // tiempo de preparacion
+  cookTimeMinutes  Int        // tiempo de cocción
+  servings         Int        @default(2)
+  imageUrl         String?
+  videoUrl         String?
+  tags             String[]   // ["vegano", "sin gluten", etc.]
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
+  // Relaciones
+  authorId         String
+  author           User       @relation("AuthoredRecipes", fields: [authorId], references: [id], onDelete: Cascade)
+
+  mealId           String
+  meal             Meal       @relation(fields: [mealId], references: [id])
+
+  ingredients      RecipeIngredient[]
+  steps            RecipeStep[]
+  comments         Comment[]
+  ratings          Rating[]
+  savedBy          SavedRecipe[]
+
+  @@index([authorId])
+  @@index([mealId])
+  @@index([isPublic])
+  @@index([createdAt(sort: Desc)])
+}
+
+// Tabla intermedia Recipe <-> Ingredient con cantidad y unidad
+model RecipeIngredient {
+  id           String  @id @default(cuid())
+  quantity     Float
+  unit         Unit
+  notes        String? // "picado fino", "a temperatura ambiente"
+  order        Int     @default(0)
+
+  recipeId     String
+  recipe       Recipe     @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  ingredientId String
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
+
+  @@index([recipeId])
+}
+
+model RecipeStep {
+  id           String  @id @default(cuid())
+  order        Int
+  title        String  // "Preparar la masa"
+  description  String
+  imageUrl     String?
+  durationMin  Int?    // duracion estimada del paso en minutos
+
+  recipeId     String
+  recipe       Recipe  @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@index([recipeId])
+}
+
+// INGREDIENT (catalogo global)
+model Ingredient {
+  id           String   @id @default(cuid())
+  name         String   @unique  // "Harina 000", "Huevo"
+  imageUrl     String?
+  createdAt    DateTime @default(now())
+
+  recipeUses   RecipeIngredient[]
+  fridgeItems  FridgeItem[]
+
+  @@index([name])
+}
+
+// FRIDGE
+model FridgeItem {
+  id           String    @id @default(cuid())
+  quantity     Float
+  unit         Unit
+  expiresAt    DateTime?
+  addedAt      DateTime  @default(now())
+
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  ingredientId String
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
+
+  @@unique([userId, ingredientId])  // un user no puede tener el mismo ingrediente dos veces
+  @@index([userId])
+  @@index([expiresAt])  // para queries de "proximos a vencer"
+}
+
+// SOCIAL: COMENTARIOS, RATINGS, FAVORITOS
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  authorId  String
+  author    User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  recipeId  String
+  recipe    Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@index([recipeId])
+  @@index([authorId])
+}
+
+model Rating {
+  score     Int      // 1-5
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  recipeId  String
+  recipe    Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@id([userId, recipeId])  // un user solo puede puntuar una vez por receta
+}
+
+model SavedRecipe {
+  savedAt   DateTime @default(now())
+
+  userId    String
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  recipeId  String
+  recipe    Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@id([userId, recipeId])
+  @@index([userId])
+}

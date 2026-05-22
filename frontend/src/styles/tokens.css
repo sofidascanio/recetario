@@ -1,0 +1,93 @@
+:root {
+  /* Superficie */
+  --color-surface: #fbf9f5;
+  --color-surface-dim: #dbdad6;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f5f3ef;
+  --color-surface-container: #efeeea;
+  --color-surface-container-high: #eae8e4;
+  --color-surface-container-highest: #e4e2de;
+
+  /* Texto */
+  --color-on-surface: #1b1c1a;
+  --color-on-surface-variant: #444840;
+  --color-outline: #74786f;
+  --color-outline-variant: #c4c8bd;
+
+  /* Primario */
+  --color-primary: #4d6243;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #657b5a;
+  --color-primary-fixed: #d2eac3;
+  --color-primary-fixed-dim: #b6cda8;
+  --color-on-primary-fixed: #0e2008;
+  --color-on-primary-fixed-variant: #384c2f;
+
+  /* Secundario */
+  --color-secondary: #94492c;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #fd9e7a;
+  --color-on-secondary-container: #773318;
+
+  /* Terciario */
+  --color-tertiary: #715c00;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #c7a938;
+  --color-tertiary-fixed: #ffe17a;
+  --color-on-tertiary-fixed: #231b00;
+
+  /* Error */
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+
+  /* Background */
+  --color-background: #fbf9f5;
+  --color-on-background: #1b1c1a;
+
+  /* Tipografíia */
+  --font-serif: 'Literata', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+
+  /* Espaciado (8px base) */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+  --space-2xl: 40px;
+  --space-3xl: 64px;
+
+  /* Border radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-full: 9999px;
+}
+
+/* Dark mode */
+html.dark {
+  --color-surface: #131412;
+  --color-surface-container-lowest: #0e0e0d;
+  --color-surface-container-low: #1b1c1a;
+  --color-surface-container: #1f201e;
+  --color-surface-container-high: #2a2a28;
+  --color-surface-container-highest: #343533;
+  --color-on-surface: #e4e2de;
+  --color-on-surface-variant: #c4c8bd;
+  --color-outline: #8e9288;
+  --color-outline-variant: #444840;
+  --color-primary: #b6cda8;
+  --color-on-primary: #22351b;
+  --color-primary-fixed: #d2eac3;
+  --color-secondary: #ffb59b;
+  --color-on-secondary: #591d04;
+  --color-tertiary: #e4c451;
+  --color-on-tertiary: #3b2f00;
+  --color-error: #ffb4ab;
+  --color-on-error: #690005;
+  --color-background: #131412;
+  --color-on-background: #e4e2de;
+}
