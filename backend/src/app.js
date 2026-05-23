@@ -2,6 +2,8 @@ import express from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
 import morgan from 'morgan'
+import authRouter from './routes/auth.routes.js'
+import { errorHandler } from './middlewares/error.middleware.js'
 
 const app = express()
 
@@ -25,14 +27,9 @@ app.get('/health', (_req, res) => {
 })
 
 // rutas API
-// app.use('/api/v1/recipes', recipesRouter)
+app.use('/api/v1/auth', authRouter)
 
 // middleware de error global
-app.use((err, _req, res, _next) => {
-    console.error(err.stack)
-    res.status(err.status || 500).json({
-        error: err.message || 'Internal Server Error'
-    })
-})
+app.use(errorHandler)
 
 export default app
