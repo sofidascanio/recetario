@@ -4,6 +4,7 @@ import helmet from 'helmet'
 import morgan from 'morgan'
 import authRouter from './routes/auth.routes.js'
 import { errorHandler } from './middlewares/error.middleware.js'
+import recipeRouter from './routes/recipe.routes.js'
 
 const app = express()
 
@@ -28,6 +29,7 @@ app.get('/health', (_req, res) => {
 
 // rutas API
 app.use('/api/v1/auth', authRouter)
+app.use('/api/v1/recipes', recipeRouter)
 
 // middleware de error global
 app.use(errorHandler)
