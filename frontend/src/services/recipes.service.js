@@ -10,4 +10,6 @@ export const recipesService = {
     unsave: (id) => api.delete(`/recipes/${id}/save`),
     rate: (id, score)  => api.post(`/recipes/${id}/rate`, { score }),
     fridgeMatch: () => api.get('/recipes/fridge-match'),
+    comments: (id) => api.get(`/recipes/${id}/comments`),
+    addComment: (id, content) => api.post(`/recipes/${id}/comments`, { content }),
 }

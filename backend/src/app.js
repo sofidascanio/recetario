@@ -5,6 +5,9 @@ import morgan from 'morgan'
 import authRouter from './routes/auth.routes.js'
 import { errorHandler } from './middlewares/error.middleware.js'
 import recipeRouter from './routes/recipe.routes.js'
+import commentRouter from './routes/comment.routes.js'
+import fridgeRouter from './routes/fridge.routes.js'
+import userRouter from './routes/user.routes.js'
 
 const app = express()
 
@@ -30,6 +33,9 @@ app.get('/health', (_req, res) => {
 // rutas API
 app.use('/api/v1/auth', authRouter)
 app.use('/api/v1/recipes', recipeRouter)
+app.use('/api/v1/recipes/:id/comments', commentRouter)
+app.use('/api/v1/fridge', fridgeRouter)
+app.use('/api/v1/users', userRouter)
 
 // middleware de error global
 app.use(errorHandler)
