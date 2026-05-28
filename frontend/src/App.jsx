@@ -1,16 +1,69 @@
-import { useEffect, useState } from 'react'
-import api from './services/api'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { AuthProvider } from './contexts/AuthContext.jsx'
+import { useAuth } from './hooks/useAuth.js'
+import MainLayout from './components/layout/MainLayout.jsx'
+import HomePage from './pages/Home/HomePage.jsx'
+import LoginPage from './pages/Auth/LoginPage.jsx'
+import RegisterPage from './pages/Auth/RegisterPage.jsx'
+import RecipeDetailPage from './pages/Recipe/RecipeDetailPage.jsx'
+import CreateRecipePage from './pages/Recipe/CreateRecipePage.jsx'
+import ProfilePage from './pages/Profile/ProfilePage.jsx'
+import FridgePage from './pages/Fridge/FridgePage.jsx'
+import NotFoundPage from './pages/NotFoundPage.jsx'
 
-function App() {
-  const [health, setHealth] = useState(null)
-
-  useEffect(() => {
-    fetch('http://localhost:3000/health')
-      .then(r => r.json())
-      .then(setHealth)
-  }, [])
-
-  return <pre>{JSON.stringify(health, null, 2)}</pre>
+// ruta que redirige si no hay sesion
+function PrivateRoute({ children }) {
+    const { user, loading } = useAuth()
+    if (loading) return <AppLoader />
+    return user ? children : <Navigate to="/login" replace />
 }
 
-export default App
+// ruta que redirige si ya hay sesion (login/register)
+function GuestRoute({ children }) {
+    const { user, loading } = useAuth()
+    if (loading) return <AppLoader />
+    return user ? <Navigate to="/" replace /> : children
+}
+
+function AppLoader() {
+    return (
+        <div className="app-loader">
+          <span className="app-loader__spinner" />
+        </div>
+    )
+}
+
+export default function App() {
+    return (
+        <BrowserRouter>
+            <AuthProvider>
+                <Routes>
+                  {/* rutas guest, sin layout */}
+                  <Route path="/login" element={
+                    <GuestRoute><LoginPage /></GuestRoute>
+                  } />
+                  <Route path="/register" element={
+                    <GuestRoute><RegisterPage /></GuestRoute>
+                  } />
+
+                  {/* rutas con layout principal */}
+                  <Route element={<MainLayout />}>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/recipes/:id" element={<RecipeDetailPage />} />
+                    <Route path="/profile/:username" element={<ProfilePage />} />
+
+                    {/* rutas privadas dentro del layout */}
+                    <Route path="/recipes/new" element={
+                      <PrivateRoute><CreateRecipePage /></PrivateRoute>
+                    } />
+                    <Route path="/fridge" element={
+                      <PrivateRoute><FridgePage /></PrivateRoute>
+                    } />
+                  </Route>
+
+                  <Route path="*" element={<NotFoundPage />} />
+                </Routes>
+            </AuthProvider>
+        </BrowserRouter>
+    )
+}
