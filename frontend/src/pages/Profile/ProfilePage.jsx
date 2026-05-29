@@ -1,31 +1,72 @@
 import { useParams } from 'react-router-dom'
-import { useState } from 'react'
-import { useQuery } from '../../hooks/useApi.js'
+import { useState, useEffect } from 'react'
+import { useQuery, useMutation } from '../../hooks/useApi.js'
 import { useAuth } from '../../hooks/useAuth.js'
 import api from '../../services/api.js'
 import styles from './ProfilePage.module.css'
 
 export default function ProfilePage() {
-    const { username }   = useParams()
-    const { user: me }   = useAuth()
-    const [tab, setTab]  = useState('recipes')
+    const { username } = useParams()
+    const { user: me } = useAuth()
+
+    const [tab, setTab] = useState('recipes')
+    const [isFollowing, setIsFollowing] = useState(false)
+    const [followLoading, setFollowLoading] = useState(false)
 
     const { data: profile, loading } = useQuery(
-        () => api.get(`/users/${username}`), [username]
+        () => api.get(`/users/${username}`),
+        [username]
     )
 
     const { data: recipes } = useQuery(
-        () => api.get(`/users/${username}/recipes`), [username]
+        () => api.get(`/users/${username}/recipes`),
+        [username]
     )
-
-    if (loading) return <p className={styles.state}>Cargando perfil...</p>
-    if (!profile) return <p className={styles.state}>Usuario no encontrado.</p>
 
     const isOwn = me?.username === username
 
+    // chequea seguimiento cuando carga
+    // siempre antes de returns condicionales
+    useEffect(() => {
+        if (!me || isOwn || !profile) return
+
+        api.get(`/users/${username}/follow`)
+            .then(data => setIsFollowing(data.isFollowing))
+            .catch(() => {})
+    }, [me, isOwn, profile, username])
+
+    if (loading) {
+        return <p className={styles.state}>Cargando perfil...</p>
+    }
+
+    if (!profile) {
+        return <p className={styles.state}>Usuario no encontrado.</p>
+    }
+
+    async function handleFollow() {
+        if (!me) {
+            window.location.href = '/login'
+            return
+        }
+
+        setFollowLoading(true)
+
+        try {
+            if (isFollowing) {
+                await api.delete(`/users/${username}/follow`)
+                setIsFollowing(false)
+            } else {
+                await api.post(`/users/${username}/follow`)
+                setIsFollowing(true)
+            }
+        } finally {
+            setFollowLoading(false)
+        }
+    }
+
     return (
         <div className={styles.page}>
-            {/* Hero del perfil */}
+            {/* hero del perfil */}
             <section className={styles.hero}>
                 <div className={styles.avatarWrap}>
                     {profile.avatarUrl
@@ -49,8 +90,17 @@ export default function ProfilePage() {
                         <Stat value={profile._count?.following} label="Siguiendo"  />
                     </div>
 
-                    {isOwn && (
-                        <button className={styles.editBtn}>Editar perfil</button>
+                    {isOwn ? (
+                            <button className={styles.editBtn}>Editar perfil</button>
+                        ) : me && (
+                            <button className={`${styles.followBtn} ${isFollowing ? styles.followingBtn : ''}`}
+                                    onClick={handleFollow}
+                                    disabled={followLoading}>
+                                {followLoading
+                                    ? '...'
+                                    : isFollowing ? 'Siguiendo' : '+ Seguir'
+                                }
+                            </button>
                     )}
                 </div>
             </section>

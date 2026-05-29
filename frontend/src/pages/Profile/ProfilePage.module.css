@@ -200,3 +200,31 @@
     color: var(--color-on-surface-variant);
     font-size: 16px;
 }
+
+.followBtn {
+    padding: 10px 24px;
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+    border: none;
+    border-radius: 9999px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .15s;
+}
+
+.followBtn:hover:not(:disabled) { opacity: .9; }
+.followBtn:disabled { opacity: .5; cursor: not-allowed; }
+
+.followingBtn {
+    background: transparent;
+    border: 1.5px solid var(--color-outline-variant);
+    color: var(--color-on-surface-variant);
+}
+
+.followingBtn:hover {
+    background: var(--color-error-container);
+    border-color: var(--color-error);
+    color: var(--color-error);
+}

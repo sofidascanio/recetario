@@ -9,6 +9,7 @@ import commentRouter from './routes/comment.routes.js'
 import fridgeRouter from './routes/fridge.routes.js'
 import userRouter from './routes/user.routes.js'
 import mealRouter from './routes/meal.routes.js'
+import followRouter from './routes/follow.routes.js'
 
 const app = express()
 
@@ -38,6 +39,8 @@ app.use('/api/v1/recipes/:id/comments', commentRouter)
 app.use('/api/v1/fridge', fridgeRouter)
 app.use('/api/v1/users', userRouter)
 app.use('/api/v1/meals', mealRouter)
+// se monta en /api/v1/users
+app.use('/api/v1/users', followRouter) 
 
 // middleware de error global
 app.use(errorHandler)
