@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import { useQuery, useMutation } from '../../hooks/useApi.js'
 import { fridgeService } from '../../services/fridge.service.js'
 import styles from './FridgePage.module.css'
@@ -170,6 +170,19 @@ function AddItemModal({ onClose, onSuccess }) {
     const [expiresAt, setExpiresAt] = useState('')
     const [searching, setSearching] = useState(false)
 
+    const [dropdownOpen, setDropdownOpen] = useState(false)
+    const searchRef = useRef(null)
+
+    useEffect(() => {
+        function handleClickOutside(e) {
+            if (searchRef.current && !searchRef.current.contains(e.target)) {
+                setDropdownOpen(false)
+            }
+        }
+        document.addEventListener('mousedown', handleClickOutside)
+        return () => document.removeEventListener('mousedown', handleClickOutside)
+    }, [])
+
     const { mutate: addItem, loading } = useMutation(
         (data) => fridgeService.addItem(data)
     )
@@ -187,19 +200,27 @@ function AddItemModal({ onClose, onSuccess }) {
         const q = e.target.value
         setQuery(q)
         setSelected(null)
-        search(q)
+        if (q.length < 2) { setResults([]); setDropdownOpen(false); return }
+        setSearching(true)
+        try {
+            const data = await fridgeService.searchIngredients(q)
+            setResults(data)
+            setDropdownOpen(true)
+        } finally { setSearching(false) }
     }
 
     async function handleSelect(ingredient) {
         setSelected(ingredient)
         setQuery(ingredient.name)
         setResults([])
+        setDropdownOpen(false)
     }
 
     async function handleCreateNew() {
         const ingredient = await fridgeService.createIngredient(query)
         setSelected(ingredient)
         setResults([])
+        setDropdownOpen(false)
     }
 
     async function handleSubmit(e) {
@@ -230,37 +251,29 @@ function AddItemModal({ onClose, onSuccess }) {
                     {/* busqueda de ingrediente */}
                     <div className={styles.field}>
                         <label>Ingrediente</label>
-                        <div className={styles.searchWrapper}>
+                        <div className={styles.searchWrapper} ref={searchRef}>
                             <input value={query}
-                                  onChange={handleQueryChange}
-                                  placeholder="Ej: Tomate, Harina..."
-                                  autoFocus/>
-                            {searching && (
-                              <span className={styles.searchSpinner} />
+                                onChange={handleQueryChange}
+                                placeholder="Ej: Tomate, Harina..."
+                                autoFocus/>
+                            {searching && <span className={styles.searchSpinner} />}
+
+                            {/* resultados */}
+                            {dropdownOpen && (results.length > 0 || query.length >= 2) && (
+                                <ul className={styles.searchResults}>
+                                    {results.map(r => (
+                                        <li key={r.id} onClick={() => handleSelect(r)}>{r.name}</li>
+                                    ))}
+                                    <li className={styles.createNew} onClick={handleCreateNew}>
+                                        <span className="material-symbols-outlined">add</span>
+                                        Crear "{query}"
+                                    </li>
+                                </ul>
                             )}
                         </div>
 
-                        {/* Resultados */}
-                        {results.length > 0 && (
-                            <ul className={styles.searchResults}>
-                              {results.map(r => (
-                                <li key={r.id} onClick={() => handleSelect(r)}>
-                                    {r.name}
-                                </li>
-                              ))}
-                              {query.length > 1 && (
-                                <li className={styles.createNew} onClick={handleCreateNew}>
-                                    <span className="material-symbols-outlined">add</span>
-                                    Crear "{query}"
-                                </li>
-                              )}
-                          </ul>
-                        )}
-
                         {selected && (
-                            <div className={styles.selectedChip}>
-                              ✓ {selected.name}
-                            </div>
+                            <div className={styles.selectedChip}>✓ {selected.name}</div>
                         )}
                     </div>
 

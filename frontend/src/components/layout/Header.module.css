@@ -71,3 +71,18 @@
     background-color: var(--color-primary);
     color: var(--color-on-primary);
 }
+
+.themeBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-on-surface-variant);
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background .15s;
+}
+
+.themeBtn:hover { background: var(--color-surface-container); }

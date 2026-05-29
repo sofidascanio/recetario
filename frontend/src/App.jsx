@@ -10,6 +10,7 @@ import CreateRecipePage from './pages/Recipe/CreateRecipePage.jsx'
 import ProfilePage from './pages/Profile/ProfilePage.jsx'
 import FridgePage from './pages/Fridge/FridgePage.jsx'
 import NotFoundPage from './pages/NotFoundPage.jsx'
+import { ThemeProvider } from './contexts/ThemeContext.jsx'
 
 // ruta que redirige si no hay sesion
 function PrivateRoute({ children }) {
@@ -35,35 +36,37 @@ function AppLoader() {
 
 export default function App() {
     return (
-        <BrowserRouter>
-            <AuthProvider>
-                <Routes>
-                  {/* rutas guest, sin layout */}
-                  <Route path="/login" element={
-                    <GuestRoute><LoginPage /></GuestRoute>
-                  } />
-                  <Route path="/register" element={
-                    <GuestRoute><RegisterPage /></GuestRoute>
-                  } />
-
-                  {/* rutas con layout principal */}
-                  <Route element={<MainLayout />}>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/recipes/:id" element={<RecipeDetailPage />} />
-                    <Route path="/profile/:username" element={<ProfilePage />} />
-
-                    {/* rutas privadas dentro del layout */}
-                    <Route path="/recipes/new" element={
-                      <PrivateRoute><CreateRecipePage /></PrivateRoute>
+        <ThemeProvider> 
+          <BrowserRouter>
+              <AuthProvider>
+                  <Routes>
+                    {/* rutas guest, sin layout */}
+                    <Route path="/login" element={
+                      <GuestRoute><LoginPage /></GuestRoute>
                     } />
-                    <Route path="/fridge" element={
-                      <PrivateRoute><FridgePage /></PrivateRoute>
+                    <Route path="/register" element={
+                      <GuestRoute><RegisterPage /></GuestRoute>
                     } />
-                  </Route>
 
-                  <Route path="*" element={<NotFoundPage />} />
-                </Routes>
-            </AuthProvider>
-        </BrowserRouter>
+                    {/* rutas con layout principal */}
+                    <Route element={<MainLayout />}>
+                      <Route path="/" element={<HomePage />} />
+                      <Route path="/recipes/:id" element={<RecipeDetailPage />} />
+                      <Route path="/profile/:username" element={<ProfilePage />} />
+
+                      {/* rutas privadas dentro del layout */}
+                      <Route path="/recipes/new" element={
+                        <PrivateRoute><CreateRecipePage /></PrivateRoute>
+                      } />
+                      <Route path="/fridge" element={
+                        <PrivateRoute><FridgePage /></PrivateRoute>
+                      } />
+                    </Route>
+
+                    <Route path="*" element={<NotFoundPage />} />
+                  </Routes>
+              </AuthProvider>
+          </BrowserRouter>
+        </ThemeProvider>
     )
 }

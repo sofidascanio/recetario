@@ -1,9 +1,12 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth.js'
 import styles from './Header.module.css'
+import { useTheme } from '../../hooks/useTheme.js'
 
 export default function Header() {
     const { user } = useAuth()
+
+    const { theme, toggle } = useTheme()
 
     return (
         <header className={styles.header}>
@@ -13,6 +16,13 @@ export default function Header() {
                 </Link>
 
                 <nav className={styles.actions}>
+                    <button className={styles.themeBtn}
+                            onClick={toggle}
+                            aria-label={theme === 'dark' ? 'Modo claro' : 'Modo oscuro'}>
+                        <span className="material-symbols-outlined">
+                            {theme === 'dark' ? 'light_mode' : 'dark_mode'}
+                        </span>
+                    </button>
                     {user ? (
                         <Link to={`/profile/${user.username}`}
                             className={styles.avatar}

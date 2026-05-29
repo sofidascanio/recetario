@@ -4,6 +4,7 @@ import { recipesService } from '../../services/recipes.service.js'
 import { useAuth } from '../../hooks/useAuth.js'
 import { useState } from 'react'
 import styles from './RecipeDetailPage.module.css'
+import CommentSection from '../../components/ui/CommentSection.jsx'
 
 const DIFFICULTY_LABEL = {
     EASY: 'Fácil',
@@ -58,7 +59,7 @@ export default function RecipeDetailPage() {
     return (
         <article className={styles.page}>
 
-          {/* ─hero */}
+          {/* hero */}
           <section className={styles.hero}>
               {recipe.imageUrl
                 ? <img src={recipe.imageUrl} alt={recipe.title} className={styles.heroImg} />
@@ -147,6 +148,7 @@ export default function RecipeDetailPage() {
               </div>
 
             </div>
+            <CommentSection recipeId={id} />
         </article>
     )
 }

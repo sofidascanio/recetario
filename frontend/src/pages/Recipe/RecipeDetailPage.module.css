@@ -4,8 +4,8 @@
 .hero {
     position: relative;
     width: 100vw;
-    /* romper el padding del layout */
-    margin-left: calc(-20px);
+    margin-left: 50%;
+    transform: translateX(-50%);
     height: 340px;
     overflow: hidden;
     margin-bottom: 24px;

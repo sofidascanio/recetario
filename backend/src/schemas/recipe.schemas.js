@@ -16,7 +16,7 @@ const stepSchema = z.object({
     order: z.number().int().min(1),
     title: z.string().min(2).max(100),
     description: z.string().min(5),
-    imageUrl: z.url().optional(),
+    imageUrl: z.union([z.url(), z.literal('')]).optional().transform(v => v || undefined),
     durationMin: z.number().int().positive().optional(),
 })
 
@@ -29,8 +29,8 @@ export const createRecipeSchema = z.object({
     cookTimeMinutes: z.number().int().min(0),
     servings: z.number().int().positive().default(2),
     isPublic: z.boolean().default(true),
-    imageUrl: z.url().optional(),
-    videoUrl: z.url().optional(),
+    imageUrl: z.union([z.url(), z.literal('')]).optional().transform(v => v || undefined),
+    videoUrl: z.union([z.url(), z.literal('')]).optional().transform(v => v || undefined),
     tags: z.array(z.string().toLowerCase().trim()).max(10).default([]),
     ingredients: z.array(ingredientSchema).min(1, 'Al menos un ingrediente'),
     steps: z.array(stepSchema).min(1, 'Al menos un paso'),
