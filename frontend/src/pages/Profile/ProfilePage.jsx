@@ -4,6 +4,7 @@ import { useQuery, useMutation } from '../../hooks/useApi.js'
 import { useAuth } from '../../hooks/useAuth.js'
 import api from '../../services/api.js'
 import styles from './ProfilePage.module.css'
+import AvatarUploader from '../../components/ui/AvatarUploader.jsx'
 
 export default function ProfilePage() {
     const { username } = useParams()
@@ -22,6 +23,17 @@ export default function ProfilePage() {
         () => api.get(`/users/${username}/recipes`),
         [username]
     )
+
+    const [avatarUrl, setAvatarUrl] = useState(profile?.avatarUrl)
+
+    const { mutate: updateAvatar } = useMutation(
+        (url) => api.patch('/users/me', { avatarUrl: url })
+    )
+
+    async function handleAvatarChange(url) {
+        setAvatarUrl(url)
+        await updateAvatar(url)
+    }
 
     const isOwn = me?.username === username
 
@@ -69,14 +81,18 @@ export default function ProfilePage() {
             {/* hero del perfil */}
             <section className={styles.hero}>
                 <div className={styles.avatarWrap}>
-                    {profile.avatarUrl
-                      ? <img src={profile.avatarUrl} alt={profile.displayName} className={styles.avatar} />
-                      : (
-                        <div className={styles.avatarFallback}>
-                            {profile.displayName[0].toUpperCase()}
+                    {isOwn ? (
+                        <AvatarUploader currentUrl={avatarUrl}
+                                        displayName={profile.displayName}
+                                        onChange={handleAvatarChange}/>
+                        ) : (
+                        <div className={styles.avatarWrap}>
+                            {profile.avatarUrl
+                                ? <img src={profile.avatarUrl} alt={profile.displayName} className={styles.avatar} />
+                                : <div className={styles.avatarFallback}>{profile.displayName[0].toUpperCase()}</div>
+                            }
                         </div>
-                      )
-                    }
+                    )}
                 </div>
 
                 <div className={styles.info}>

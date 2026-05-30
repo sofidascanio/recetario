@@ -1,5 +1,6 @@
 import prisma from '../config/prisma.js'
 import { NotFoundError } from '../middlewares/error.middleware.js'
+import { extractPublicId, deleteImage } from './upload.service.js'
 
 export async function getUserByUsername(username) {
     const user = await prisma.user.findUnique({
@@ -32,5 +33,34 @@ export async function getUserRecipes(username, currentUserId) {
             _count: { select: { savedBy: true, ratings: true } },
         },
         orderBy: { createdAt: 'desc' },
+    })
+}
+
+export async function updateProfile(userId, data) {
+    const { displayName, bio, avatarUrl } = data
+
+    // si hay nueva imagen de avatar, elimina la anterior en cloudinary
+    if (avatarUrl) {
+        const currentUser = await prisma.user.findUnique({
+            where: { id: userId },
+            select: { avatarUrl: true },
+        })
+        if (currentUser?.avatarUrl) {
+            const oldPublicId = extractPublicId(currentUser.avatarUrl)
+            await deleteImage(oldPublicId)
+        }
+    }
+
+    return prisma.user.update({
+        where: { id: userId },
+        data: {
+            ...(displayName && { displayName }),
+            ...(bio !== undefined && { bio }),
+            ...(avatarUrl && { avatarUrl }),
+        },
+        select: {
+            id: true, email: true, username: true,
+            displayName: true, avatarUrl: true, bio: true,
+        },
     })
 }

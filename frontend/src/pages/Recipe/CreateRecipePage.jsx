@@ -4,6 +4,7 @@ import { useRecipeForm } from '../../hooks/useRecipeForm.js'
 import { fridgeService } from '../../services/fridge.service.js'
 import api from '../../services/api.js'
 import styles from './CreateRecipePage.module.css'
+import ImageUploader from '../../components/ui/ImageUploader.jsx'
 
 const UNIT_SHORT = {
     GRAM:'g', KILOGRAM:'kg', OUNCE:'oz', POUND:'lb',
@@ -193,18 +194,13 @@ function StepOne({ form }) {
           </Field>
 
           {/* url de imagen */}
-          <Field label="URL de imagen (opcional)">
-              <input value={form.data.imageUrl}
-                    onChange={e => form.setField('imageUrl', e.target.value)}
-                    placeholder="https://..."
-                    type="url"/>
-              {form.data.imageUrl && (
-                  <img src={form.data.imageUrl} alt="preview"
-                    className={styles.imagePreview}
-                    onError={e => e.target.style.display = 'none'}
-                  />
-              )}
-          </Field>
+            <Field label="Imagen de la receta">
+                <ImageUploader value={form.data.imageUrl}
+                            onChange={url => form.setField('imageUrl', url || '')}
+                            uploadType="recipe"
+                            aspectRatio="16/9"
+                            placeholder="Recomendado: 1200×800px o mayor"/>
+            </Field>
         </div>
     )
 }
@@ -396,6 +392,14 @@ function StepThree({ form }) {
                                     rows={3}
                           />
                       </Field>
+
+                        <Field label="Imagen del paso (opcional)">
+                            <ImageUploader value={s.imageUrl || ''}
+                                        onChange={url => form.updateStep(i, 'imageUrl', url || '')}
+                                        uploadType="step"
+                                        aspectRatio="4/3"/>
+                        </Field>
+
 
                       <Field label="Duración estimada (min)">
                         <input type="number" min="1"

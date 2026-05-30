@@ -1,4 +1,6 @@
 import * as userService from '../services/user.service.js'
+import { validate } from '../middlewares/validate.middleware.js'
+import { z } from 'zod'
 
 export async function getProfile(req, res, next) {
     try {
@@ -11,5 +13,12 @@ export async function getUserRecipes(req, res, next) {
     try {
         const recipes = await userService.getUserRecipes(req.params.username, req.user?.id)
         res.json({ data: recipes })
+    } catch (err) { next(err) }
+}
+
+export async function updateProfile(req, res, next) {
+    try {
+        const user = await userService.updateProfile(req.user.id, req.body)
+        res.json(user)
     } catch (err) { next(err) }
 }
