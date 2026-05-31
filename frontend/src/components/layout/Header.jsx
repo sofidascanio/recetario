@@ -5,7 +5,7 @@ import { useTheme } from '../../hooks/useTheme.js'
 import NotificationBell from '../ui/NotificationBell.jsx'
 
 export default function Header() {
-    const { user } = useAuth()
+    const { user, logout } = useAuth()
 
     const { theme, toggle } = useTheme()
 
@@ -26,16 +26,25 @@ export default function Header() {
                     </button>
                     {user && <NotificationBell />}
                     {user ? (
-                        <Link to={`/profile/${user.username}`}
-                            className={styles.avatar}
-                            aria-label="Mi perfil">
-                        {user.avatarUrl
-                            ? <img src={user.avatarUrl} alt={user.displayName} />
-                            : <span className={styles.avatarInitial}>
-                                {user.displayName[0].toUpperCase()}
-                            </span>
-                        }
-                        </Link>
+                        <>
+                            <Link to={`/profile/${user.username}`}
+                                className={styles.avatar}
+                                aria-label="Mi perfil">
+                            {user.avatarUrl
+                                ? <img src={user.avatarUrl} alt={user.displayName} />
+                                : <span className={styles.avatarInitial}>
+                                    {user.displayName[0].toUpperCase()}
+                                </span>
+                            }
+                            </Link>
+                            <button
+                                className={styles.logoutBtn}
+                                onClick={logout}
+                                aria-label="Cerrar sesión"
+                                title="Cerrar sesión">
+                                <span className="material-symbols-outlined">logout</span>
+                            </button>
+                        </>
                     ) : (
                         <Link to="/login" className={styles.loginBtn}>
                             Iniciar sesión
