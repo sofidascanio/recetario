@@ -11,6 +11,7 @@ import ProfilePage from './pages/Profile/ProfilePage.jsx'
 import FridgePage from './pages/Fridge/FridgePage.jsx'
 import NotFoundPage from './pages/NotFoundPage.jsx'
 import { ThemeProvider } from './contexts/ThemeContext.jsx'
+import RecommendationsPage from './pages/Recommendations/RecommendationsPage.jsx'
 
 // ruta que redirige si no hay sesion
 function PrivateRoute({ children }) {
@@ -53,6 +54,7 @@ export default function App() {
                       <Route path="/" element={<HomePage />} />
                       <Route path="/recipes/:id" element={<RecipeDetailPage />} />
                       <Route path="/profile/:username" element={<ProfilePage />} />
+                      <Route path="/recommendations" element={<RecommendationsPage />} />
 
                       {/* rutas privadas dentro del layout */}
                       <Route path="/recipes/new" element={

@@ -1,0 +1,67 @@
+.wrapper { overflow: hidden; }
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.title {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--color-on-surface);
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.arrow {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1.5px solid var(--color-outline-variant);
+    background: var(--color-surface-container-lowest);
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background .15s, border-color .15s;
+    color: var(--color-on-surface);
+}
+
+.arrow:hover {
+    background: var(--color-surface-container);
+    border-color: var(--color-outline);
+}
+
+.seeAll {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-primary);
+    text-decoration: none;
+    margin-left: 4px;
+}
+
+.track {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+}
+
+.track::-webkit-scrollbar { display: none; }
+
+/* cada hijo se comporta como una tarjeta snap */
+.track > * {
+    flex-shrink: 0;
+    width: 260px;
+    scroll-snap-align: start;
+}

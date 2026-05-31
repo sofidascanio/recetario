@@ -5,6 +5,9 @@ import { useAuth } from '../../hooks/useAuth.js'
 import { useState } from 'react'
 import styles from './RecipeDetailPage.module.css'
 import CommentSection from '../../components/ui/CommentSection.jsx'
+import { recommendationsService } from '../../services/recommendations.service.js'
+import HorizontalScroll from '../../components/ui/HorizontalScroll.jsx'
+import RecipeCard from '../../components/ui/RecipeCard.jsx'
 
 const DIFFICULTY_LABEL = {
     EASY: 'Fácil',
@@ -31,6 +34,11 @@ export default function RecipeDetailPage() {
         () => recipe?.savedBy?.length
           ? recipesService.unsave(id)
           : recipesService.save(id)
+    )
+
+    const { data: similar } = useQuery(
+        () => recommendationsService.getSimilar(id, 6),
+        [id]
     )
 
     const { mutate: submitRating } = useMutation(
@@ -149,6 +157,16 @@ export default function RecipeDetailPage() {
 
             </div>
             <CommentSection recipeId={id} />
+
+            {similar?.data?.length > 0 && (
+                <section style={{ marginTop: '48px' }}>
+                    <HorizontalScroll title="También te puede gustar">
+                        {similar.data.map(recipe => (
+                            <RecipeCard key={recipe.id} recipe={recipe} />
+                        ))}
+                    </HorizontalScroll>
+                </section>
+            )}
         </article>
     )
 }

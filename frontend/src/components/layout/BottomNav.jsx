@@ -3,9 +3,9 @@ import { useAuth } from '../../hooks/useAuth.js'
 import styles from './BottomNav.module.css'
 
 const NAV_ITEMS = [
-  { to: '/', icon: 'home', label: 'Home', public: true  },
-  { to: '/fridge', icon: 'kitchen', label: 'Fridge', public: false },
-  { to: '/saved', icon: 'bookmark', label: 'Saved', public: false },
+    { to: '/', icon: 'home', label: 'Home', public: true  },
+    { to: '/recommendations', icon: 'auto_awesome', label: 'Para vos', public: false },
+    { to: '/fridge', icon: 'kitchen', label: 'Heladera', public: false },
 ]
 
 export default function BottomNav() {

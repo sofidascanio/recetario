@@ -11,6 +11,7 @@ import userRouter from './routes/user.routes.js'
 import mealRouter from './routes/meal.routes.js'
 import followRouter from './routes/follow.routes.js'
 import uploadRouter from './routes/upload.routes.js'
+import recommendationRouter from './routes/recommendation.routes.js'
 
 const app = express()
 
@@ -43,6 +44,7 @@ app.use('/api/v1/meals', mealRouter)
 // se monta en /api/v1/users
 app.use('/api/v1/users', followRouter) 
 app.use('/api/v1/upload', uploadRouter)
+app.use('/api/v1/recommendations', recommendationRouter)
 
 // middleware de error global
 app.use(errorHandler)
