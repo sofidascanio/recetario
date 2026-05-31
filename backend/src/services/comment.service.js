@@ -1,5 +1,6 @@
 import prisma from '../config/prisma.js'
 import { NotFoundError, ForbiddenError } from '../middlewares/error.middleware.js'
+import * as notificationService from './notification.service.js'
 
 export async function getComments(recipeId) {
     return prisma.comment.findMany({
@@ -15,14 +16,30 @@ export async function getComments(recipeId) {
 
 export async function addComment(recipeId, authorId, content) {
     await assertRecipeExists(recipeId)
-    return prisma.comment.create({
-        data: { recipeId, authorId, content },
-        include: {
-            author: {
-                select: { id: true, username: true, displayName: true, avatarUrl: true },
+
+    const [comment, recipe] = await Promise.all([
+        prisma.comment.create({
+            data: { recipeId, authorId, content },
+            include: {
+                author: { select: { id: true, username: true, displayName: true, avatarUrl: true } },
             },
-        },
-    })
+        }),
+        prisma.recipe.findUnique({
+            where: { id: recipeId },
+            select: { authorId: true, title: true },
+        }),
+    ])
+
+    // notifica al autor de la receta (sin await, no bloquea la respuesta)
+    notificationService.notifyComment({
+        recipeAuthorId: recipe.authorId,
+        actorId: authorId,
+        recipeId,
+        recipeTitle: recipe.title,
+        commentPreview: content,
+    }).catch(console.error)
+
+    return comment
 }
 
 export async function deleteComment(commentId, userId) {

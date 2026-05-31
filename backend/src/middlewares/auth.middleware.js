@@ -3,13 +3,18 @@ import { JWT_CONFIG } from '../config/jwt.js'
 import { UnauthorizedError } from './error.middleware.js'
 
 export function authenticate(req, _res, next) {
-    const authHeader = req.headers.authorization
+    // lee token del header Authorization o del query param (para sse)
+    let token
 
-    if (!authHeader?.startsWith('Bearer ')) {
-        return next(new UnauthorizedError('Token requerido'))
+    const authHeader = req.headers.authorization
+    if (authHeader?.startsWith('Bearer ')) {
+        token = authHeader.split(' ')[1]
+    } else if (req.query.token) {
+        // solo para sse, en producción valida que es solo para /notifications/stream
+        token = req.query.token
     }
 
-    const token = authHeader.split(' ')[1]
+    if (!token) return next(new UnauthorizedError('Token requerido'))
 
     try {
         const payload = jwt.verify(token, JWT_CONFIG.secret)

@@ -7,6 +7,7 @@ import {
   UnauthorizedError,
   NotFoundError,
 } from '../middlewares/error.middleware.js'
+import * as notificationService from './notification.service.js'
 
 // Register
 export async function register({ email, username, displayName, password }) {
@@ -36,6 +37,12 @@ export async function register({ email, username, displayName, password }) {
         createdAt: true,
         },
     })
+
+    notificationService.notifySystem({
+        userId:  user.id,
+        message: `¡Bienvenido/a a Recetario, ${displayName}! Explora recetas y agrega ingredientes a tu heladera.`,
+        link: '/recommendations',
+    }).catch(console.error)
 
     const token = generateToken(user.id)
     return { user, token }

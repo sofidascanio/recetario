@@ -4,6 +4,7 @@ import {
   ForbiddenError,
   ConflictError,
 } from '../middlewares/error.middleware.js'
+import * as notificationService from './notification.service.js'
 
 // Crear receta
 export async function createRecipe(authorId, data) {
@@ -178,15 +179,24 @@ export async function saveRecipe(recipeId, userId) {
     await assertRecipeExists(recipeId)
 
     try {
-        await prisma.savedRecipe.create({
-            data: { recipeId, userId },
-        })
+        await prisma.savedRecipe.create({ data: { recipeId, userId } })
     } catch (err) {
-        if (err.code === 'P2002') {
-            throw new ConflictError('Ya guardaste esta receta')
-        }
+        if (err.code === 'P2002') throw new ConflictError('Ya guardaste esta receta')
         throw err
     }
+
+    // notifica al autor
+    const recipe = await prisma.recipe.findUnique({
+        where:  { id: recipeId },
+        select: { authorId: true, title: true },
+    })
+
+    notificationService.notifySave({
+        recipeAuthorId: recipe.authorId,
+        actorId: userId,
+        recipeId,
+        recipeTitle: recipe.title,
+    }).catch(console.error)
 }
 
 export async function unsaveRecipe(recipeId, userId) {
@@ -212,18 +222,32 @@ export async function rateRecipe(recipeId, userId, score) {
         create: { recipeId, userId, score },
     })
 
+    const recipe = await prisma.recipe.findUnique({
+        where: { id: recipeId },
+        select: { authorId: true, title: true },
+    })
+
+    notificationService.notifyRating({
+        recipeAuthorId: recipe.authorId,
+        actorId: userId,
+        recipeId,
+        recipeTitle: recipe.title,
+        score,
+    }).catch(console.error)
+
     // devuelve el nuevo promedio
     const agg = await prisma.rating.aggregate({
         where: { recipeId },
         _avg: { score: true },
-        _count: { score: true },
+        _count:{ score: true },
     })
 
     return {
         averageRating: Math.round(agg._avg.score * 10) / 10,
-        ratingCount: agg._count.score,
+        ratingCount:   agg._count.score,
     }
 }
+
 
 // Fridge Match 
 export async function getFridgeMatch(userId) {

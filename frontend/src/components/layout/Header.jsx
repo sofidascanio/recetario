@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth.js'
 import styles from './Header.module.css'
 import { useTheme } from '../../hooks/useTheme.js'
+import NotificationBell from '../ui/NotificationBell.jsx'
 
 export default function Header() {
     const { user } = useAuth()
@@ -23,6 +24,7 @@ export default function Header() {
                             {theme === 'dark' ? 'light_mode' : 'dark_mode'}
                         </span>
                     </button>
+                    {user && <NotificationBell />}
                     {user ? (
                         <Link to={`/profile/${user.username}`}
                             className={styles.avatar}

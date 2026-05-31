@@ -1,29 +1,38 @@
 import prisma from '../config/prisma.js'
 import { NotFoundError, ConflictError, AppError, } from '../middlewares/error.middleware.js'
+import * as notificationService from './notification.service.js'
 
 export async function followUser(followerId, targetUsername) {
     const target = await prisma.user.findUnique({
         where: { username: targetUsername },
-        select: { id: true },
+        select: { id: true, displayName: true },
     })
 
     if (!target) throw new NotFoundError('Usuario no encontrado')
-
-    if (target.id === followerId) {
-        throw new AppError('No podés seguirte a vos mismo', 400)
-    }
+    if (target.id === followerId) throw new AppError('No podes seguirte a vos mismo', 400)
 
     try {
         await prisma.follow.create({
             data: { followerId, followingId: target.id },
         })
     } catch (err) {
-        if (err.code === 'P2002') {
-            throw new ConflictError('Ya seguís a este usuario')
-        }
+        if (err.code === 'P2002') throw new ConflictError('Ya seguís a este usuario')
         throw err
     }
+
+    // info del follower para la notificacion
+    const follower = await prisma.user.findUnique({
+        where: { id: followerId },
+        select: { displayName: true },
+    })
+
+    notificationService.notifyFollow({
+        targetUserId: target.id,
+        actorId: followerId,
+        actorName: follower.displayName,
+    }).catch(console.error)
 }
+
 
 export async function unfollowUser(followerId, targetUsername) {
     const target = await prisma.user.findUnique({

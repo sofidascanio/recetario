@@ -1,0 +1,65 @@
+.wrapper {
+    position: relative;
+}
+
+.bell {
+    position: relative;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-on-surface-variant);
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background .15s, color .15s;
+}
+
+.bell:hover {
+    background: var(--color-surface-container);
+    color: var(--color-on-surface);
+}
+
+.bell .material-symbols-outlined { font-size: 24px; }
+
+/* badge de conteo */
+.badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: var(--color-error);
+    color: var(--color-on-error);
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 700;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    border: 2px solid var(--color-background);
+}
+
+/* punto de estado de conexion */
+.dot {
+    position: absolute;
+    bottom: 6px;
+    right: 6px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 1.5px solid var(--color-background);
+}
+
+.dotOnline  { background: #22c55e; }
+.dotOffline { background: var(--color-outline-variant); }
+
+/* backdrop para cerrar el panel */
+.backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 49;
+}
