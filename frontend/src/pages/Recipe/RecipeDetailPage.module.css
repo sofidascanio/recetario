@@ -70,28 +70,73 @@
     margin-bottom: 8px;
 }
 
+/* ── heroMeta: los tres chips alineados al mismo tamaño ── */
 .heroMeta {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     align-items: center;
+    flex-wrap: wrap;
 }
 
-.authorChip, .ratingChip {
+/* base compartida — font-size, padding y border-radius idénticos */
+.authorChip,
+.privateBadge,
+.ratingChip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
     font-size: 13px;
+    line-height: 1;
     font-weight: 600;
-    padding: 4px 12px;
+    padding: 5px 11px;
     border-radius: 9999px;
     backdrop-filter: blur(8px);
+    white-space: nowrap;
 }
 
 .authorChip {
-    background: rgba(255,255,255,.2);
+    background: rgba(255,255,255,.20);
     color: white;
 }
 
+/* el ícono lock heredaba 24px de Material Symbols — lo fijamos al tamaño del texto */
+.privateBadge {
+    background: rgba(148, 73, 44, 0.72);
+    color: #fff;
+}
+.privateBadge .material-symbols-outlined {
+    font-size: 14px;
+    line-height: 1;
+}
+
 .ratingChip {
-    background: var(--color-tertiary-fixed);
-    color: var(--color-on-tertiary-fixed);
+    background: rgba(113, 92, 0, 0.68);
+    color: #fff;
+}
+
+.ratingCount {
+    font-size: 11px;
+    opacity: 0.85;
+    font-weight: 400;
+}
+
+/* link del autor dentro del chip */
+.authorLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: inherit;
+    text-decoration: none;
+    transition: opacity 0.15s;
+}
+.authorLink:hover { opacity: 0.78; }
+
+.authorAvatar {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
 }
 
 /* acciones */
@@ -99,6 +144,7 @@
     display: flex;
     gap: 12px;
     margin-bottom: 24px;
+    flex-wrap: wrap;
 }
 
 .actionBtn {

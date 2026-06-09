@@ -50,11 +50,10 @@
 
 .badge .material-symbols-outlined { font-size: 14px; }
 
-/* variantes de badge */
-.match { background: var(--color-primary); color: var(--color-on-primary); }
-.trending { background: var(--color-tertiary-container);color: var(--color-on-tertiary-container); }
-.social { background: var(--color-secondary-fixed); color: var(--color-on-secondary-fixed); }
-.expiring { background: var(--color-error-container); color: var(--color-on-error-container); }
+.match { background: var(--color-primary);            color: var(--color-on-primary); }
+.trending { background: var(--color-tertiary-container); color: var(--color-on-tertiary-container); }
+.social { background: var(--color-secondary-fixed);   color: var(--color-on-secondary-fixed); }
+.expiring { background: var(--color-error-container);   color: var(--color-on-error-container); }
 
 .diffBadge {
     position: absolute;
@@ -70,21 +69,49 @@
 .medium { background: var(--color-tertiary-fixed);  color: var(--color-on-tertiary-fixed-variant); }
 .hard { background: var(--color-error-container); color: var(--color-on-error-container); }
 
-.savedIcon {
+/* boton guardar  */
+.saveBtn {
     position: absolute;
     top: 10px;
     right: 10px;
-    background: rgba(0,0,0,.4);
-    color: var(--color-tertiary-fixed);
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
-    width: 30px;
-    height: 30px;
+    border: none;
+    background: rgba(0, 0, 0, 0.40);
+    color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
+    transition: background .15s, transform .12s;
+    z-index: 1;
 }
 
-.savedIcon span { font-size: 16px; }
+.saveBtn:hover:not(:disabled) {
+    background: rgba(0, 0, 0, 0.62);
+    transform: scale(1.1);
+}
+
+.saveBtn:active:not(:disabled) {
+    transform: scale(0.93);
+}
+
+/* estado guardado — fondo terracota para seguir la paleta del diseño */
+.saveBtnActive {
+    background: var(--color-secondary, #94492c);
+    color: #fff;
+}
+
+.saveBtnActive:hover:not(:disabled) {
+    background: var(--color-secondary, #94492c);
+    opacity: 0.85;
+}
+
+.saveBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
 
 /* contenido */
 .body { padding: 14px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
@@ -120,7 +147,7 @@
     line-height: 1.35;
 }
 
-/* Match bar */
+/* match bar */
 .matchBar {
     position: relative;
     height: 6px;

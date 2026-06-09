@@ -10,12 +10,10 @@ import * as recipeController from '../controllers/recipe.controller.js'
 
 const router = Router()
 
-// requiere auth
-// va antes que la /:id porque sino express lo toma mal
+// va antes que /:id porque sino express lo interpreta como id
 router.get('/fridge-match', authenticate, recipeController.getFridgeMatch)
 
-// rutas publicas (con mas data si hay token)
-router.get('/', optionalAuth, recipeController.listRecipes)
+router.get('/',    optionalAuth, recipeController.listRecipes)
 router.get('/:id', optionalAuth, recipeController.getRecipe)
 
 router.post(
@@ -34,11 +32,11 @@ router.patch(
 
 router.delete('/:id', authenticate, recipeController.deleteRecipe)
 
-// favoritos
-router.post('/:id/save', authenticate, recipeController.saveRecipe)
+// toggle unificado, post guarda si no estaba, quita si ya estaba
+// devuelve { saved: boolean }
+router.post('/:id/save',   authenticate, recipeController.toggleSave)
 router.delete('/:id/save', authenticate, recipeController.unsaveRecipe)
 
-// rating
 router.post(
     '/:id/rate',
     authenticate,

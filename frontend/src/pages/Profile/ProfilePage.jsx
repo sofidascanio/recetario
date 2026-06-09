@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { useQuery, useMutation } from '../../hooks/useApi.js'
 import { useAuth } from '../../hooks/useAuth.js'
@@ -9,6 +9,7 @@ import AvatarUploader from '../../components/ui/AvatarUploader.jsx'
 export default function ProfilePage() {
     const { username } = useParams()
     const { user: me } = useAuth()
+    const navigate = useNavigate()
 
     const [tab, setTab] = useState('recipes')
     const [isFollowing, setIsFollowing] = useState(false)
@@ -37,8 +38,6 @@ export default function ProfilePage() {
 
     const isOwn = me?.username === username
 
-    // chequea seguimiento cuando carga
-    // siempre antes de returns condicionales
     useEffect(() => {
         if (!me || isOwn || !profile) return
 
@@ -47,13 +46,8 @@ export default function ProfilePage() {
             .catch(() => {})
     }, [me, isOwn, profile, username])
 
-    if (loading) {
-        return <p className={styles.state}>Cargando perfil...</p>
-    }
-
-    if (!profile) {
-        return <p className={styles.state}>Usuario no encontrado.</p>
-    }
+    if (loading) return <p className={styles.state}>Cargando perfil...</p>
+    if (!profile) return <p className={styles.state}>Usuario no encontrado.</p>
 
     async function handleFollow() {
         if (!me) {
@@ -62,7 +56,6 @@ export default function ProfilePage() {
         }
 
         setFollowLoading(true)
-
         try {
             if (isFollowing) {
                 await api.delete(`/users/${username}/follow`)
@@ -82,10 +75,12 @@ export default function ProfilePage() {
             <section className={styles.hero}>
                 <div className={styles.avatarWrap}>
                     {isOwn ? (
-                        <AvatarUploader currentUrl={avatarUrl}
-                                        displayName={profile.displayName}
-                                        onChange={handleAvatarChange}/>
-                        ) : (
+                        <AvatarUploader
+                            currentUrl={avatarUrl}
+                            displayName={profile.displayName}
+                            onChange={handleAvatarChange}
+                        />
+                    ) : (
                         <div className={styles.avatarWrap}>
                             {profile.avatarUrl
                                 ? <img src={profile.avatarUrl} alt={profile.displayName} className={styles.avatar} />
@@ -107,31 +102,38 @@ export default function ProfilePage() {
                     </div>
 
                     {isOwn ? (
-                            <button className={styles.editBtn}>Editar perfil</button>
-                        ) : me && (
-                            <button className={`${styles.followBtn} ${isFollowing ? styles.followingBtn : ''}`}
-                                    onClick={handleFollow}
-                                    disabled={followLoading}>
-                                {followLoading
-                                    ? '...'
-                                    : isFollowing ? 'Siguiendo' : '+ Seguir'
-                                }
-                            </button>
+                        // onClick conectado a /profile/edit
+                        <button className={styles.editBtn}
+                                onClick={() => navigate('/profile/edit')}>
+                            Editar perfil
+                        </button>
+                    ) : me && (
+                        <button
+                            className={`${styles.followBtn} ${isFollowing ? styles.followingBtn : ''}`}
+                            onClick={handleFollow}
+                            disabled={followLoading}
+                        >
+                            {followLoading ? '...' : isFollowing ? 'Siguiendo' : '+ Seguir'}
+                        </button>
                     )}
                 </div>
             </section>
 
             {/* tabs */}
             <div className={styles.tabs}>
-                <button className={`${styles.tab} ${tab === 'recipes' ? styles.tabActive : ''}`}
-                        onClick={() => setTab('recipes')}>
+                <button
+                    className={`${styles.tab} ${tab === 'recipes' ? styles.tabActive : ''}`}
+                    onClick={() => setTab('recipes')}
+                >
                     Recetas
                 </button>
                 {isOwn && (
-                <button className={`${styles.tab} ${tab === 'saved' ? styles.tabActive : ''}`}
-                        onClick={() => setTab('saved')}>
-                    Guardadas
-                </button>
+                    <button
+                        className={`${styles.tab} ${tab === 'saved' ? styles.tabActive : ''}`}
+                        onClick={() => setTab('saved')}
+                    >
+                        Guardadas
+                    </button>
                 )}
             </div>
 
@@ -145,24 +147,27 @@ export default function ProfilePage() {
                         }
                         <div className={styles.cardBody}>
                             {!recipe.isPublic && (
-                              <span className={styles.privateBadge}>
-                                  <span className="material-symbols-outlined">lock</span>
-                                  Privada
-                              </span>
+                                <span className={styles.privateBadge}>
+                                    <span className="material-symbols-outlined">lock</span>
+                                    Privada
+                                </span>
                             )}
                             <h3 className={styles.cardTitle}>{recipe.title}</h3>
                             <div className={styles.cardMeta}>
                                 <span>{recipe.meal?.category}</span>
                                 <span>⏱ {recipe.prepTimeMinutes + recipe.cookTimeMinutes} min</span>
                             </div>
-                      </div>
+                        </div>
                     </a>
                 ))}
             </div>
 
             {recipes?.data?.length === 0 && (
                 <p className={styles.empty}>
-                    {isOwn ? 'Todavía no publicaste ninguna receta.' : 'Este usuario no tiene recetas públicas.'}
+                    {isOwn
+                        ? 'Todavía no publicaste ninguna receta.'
+                        : 'Este usuario no tiene recetas públicas.'
+                    }
                 </p>
             )}
         </div>

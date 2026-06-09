@@ -11,7 +11,6 @@ export async function createRecipe(req, res, next) {
 
 export async function listRecipes(req, res, next) {
     try {
-        // valida query params con Zod
         const result = listRecipesSchema.safeParse(req.query)
         if (!result.success) {
             const errors = result.error.errors.map(e => ({
@@ -23,8 +22,7 @@ export async function listRecipes(req, res, next) {
 
         const recipes = await recipeService.listRecipes(
             result.data,
-            // puede ser undefined si no esta logueado
-            req.user?.id
+            req.user?.id  // undefined si no esta logueado
         )
         res.json(recipes)
     } catch (err) { next(err) }
@@ -49,7 +47,7 @@ export async function updateRecipe(req, res, next) {
         )
         res.json(recipe)
     } catch (err) { next(err) }
-    }
+}
 
 export async function deleteRecipe(req, res, next) {
     try {
@@ -58,6 +56,19 @@ export async function deleteRecipe(req, res, next) {
     } catch (err) { next(err) }
 }
 
+// toggle unificado: post /:id/save guarda si no estaba, quita si ya estaba
+// devuelve { saved: boolean } para que el front actualice el icono sin refetch
+export async function toggleSave(req, res, next) {
+    try {
+        const result = await recipeService.toggleSaveRecipe(
+            req.params.id,
+            req.user.id
+        )
+        res.json(result)
+    } catch (err) { next(err) }
+}
+
+// para separar los handlers, por las rutas delete /:id/save 
 export async function saveRecipe(req, res, next) {
     try {
         await recipeService.saveRecipe(req.params.id, req.user.id)

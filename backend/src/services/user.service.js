@@ -39,7 +39,7 @@ export async function getUserRecipes(username, currentUserId) {
 export async function updateProfile(userId, data) {
     const { displayName, bio, avatarUrl } = data
 
-    // si hay nueva imagen de avatar, elimina la anterior en cloudinary
+    // si hay nueva imagen, elimina la anterior en Cloudinary
     if (avatarUrl) {
         const currentUser = await prisma.user.findUnique({
             where: { id: userId },
@@ -47,16 +47,17 @@ export async function updateProfile(userId, data) {
         })
         if (currentUser?.avatarUrl) {
             const oldPublicId = extractPublicId(currentUser.avatarUrl)
-            await deleteImage(oldPublicId)
+            // fire-and-forget: no bloquea la respuesta si Cloudinary tarda
+            deleteImage(oldPublicId).catch(console.error)
         }
     }
 
     return prisma.user.update({
         where: { id: userId },
         data: {
-            ...(displayName && { displayName }),
-            ...(bio !== undefined && { bio }),
-            ...(avatarUrl && { avatarUrl }),
+            ...(displayName !== undefined && { displayName }),
+            ...(bio         !== undefined && { bio }),
+            ...(avatarUrl   !== undefined && { avatarUrl }),
         },
         select: {
             id: true, email: true, username: true,

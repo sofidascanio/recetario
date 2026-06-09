@@ -1,48 +1,39 @@
 import { useRecipeSearch } from '../../hooks/useRecipeSearch.js'
 import { useAuth } from '../../hooks/useAuth.js'
 import { useQuery } from '../../hooks/useApi.js'
-import { recipesService } from '../../services/recipes.service.js'
 import { Link } from 'react-router-dom'
+import RecipeCard from '../../components/ui/RecipeCard.jsx'
 import styles from './HomePage.module.css'
 
 const CATEGORIES = [
-  { value: '',  label: 'Todas' },
-  { value: 'BREAKFAST', label: 'Desayuno' },
-  { value: 'LUNCH', label: 'Almuerzo' },
-  { value: 'DINNER', label: 'Cena' },
-  { value: 'SNACK', label: 'Snack' },
-  { value: 'DESSERT', label: 'Postre' },
-  { value: 'DRINK', label: 'Bebida' },
+    { value: '',  label: 'Todas' },
+    { value: 'BREAKFAST', label: 'Desayuno' },
+    { value: 'LUNCH', label: 'Almuerzo' },
+    { value: 'DINNER', label: 'Cena' },
+    { value: 'SNACK', label: 'Snack' },
+    { value: 'DESSERT', label: 'Postre' },
+    { value: 'DRINK', label: 'Bebida' },
 ]
 
 const DIFFICULTIES = [
-  { value: '', label: 'Cualquier dificultad' },
-  { value: 'EASY', label: 'Fácil' },
-  { value: 'MEDIUM', label: 'Intermedio' },
-  { value: 'HARD', label: 'Difícil' },
+    { value: '', label: 'Cualquier dificultad' },
+    { value: 'EASY', label: 'Fácil' },
+    { value: 'MEDIUM', label: 'Intermedio' },
+    { value: 'HARD', label: 'Difícil' },
 ]
 
 const SORT_OPTIONS = [
-  { value: 'recent', label: 'Más recientes' },
-  { value: 'popular', label: 'Más guardadas' },
-  { value: 'rating', label: 'Mejor puntuadas'},
+    { value: 'recent', label: 'Más recientes' },
+    { value: 'popular', label: 'Más guardadas' },
+    { value: 'rating', label: 'Mejor puntuadas'},
 ]
-
-const DIFF_LABEL = { EASY: 'Fácil', MEDIUM: 'Medio', HARD: 'Difícil' }
-
-const CAT_LABEL = {
-  BREAKFAST: 'Desayuno', LUNCH: 'Almuerzo', DINNER: 'Cena',
-  SNACK: 'Snack', DESSERT: 'Postre', DRINK: 'Bebida', APPETIZER: 'Entrada',
-}
 
 export default function HomePage() {
     const { user } = useAuth()
     const search = useRecipeSearch()
 
-    // feed de seguidos (solo si esta logueado)
     const { data: feed } = useQuery(
-        () => user ? fetch('/api/v1/users/feed')
-        .then(r => r.json()) : Promise.resolve(null),
+        () => user ? fetch('/api/v1/users/feed').then(r => r.json()) : Promise.resolve(null),
         [user?.id]
     )
 
@@ -85,7 +76,6 @@ export default function HomePage() {
             {/* busqueda y filtros */}
             <section className={styles.searchSection}>
 
-                {/* barra de busqueda */}
                 <div className={styles.searchBar}>
                     <span className="material-symbols-outlined">search</span>
                     <input value={search.filters.search}
@@ -100,7 +90,6 @@ export default function HomePage() {
                     )}
                 </div>
 
-                {/* categorias, chips horizontales */}
                 <div className={styles.categoryScroll}>
                     {CATEGORIES.map(cat => (
                         <button key={cat.value}
@@ -113,37 +102,34 @@ export default function HomePage() {
                     ))}
                 </div>
 
-                {/* filtros secundarios */}
                 <div className={styles.filterRow}>
-                <select className={styles.filterSelect}
-                        value={search.filters.difficulty}
-                        onChange={e => search.setFilter('difficulty', e.target.value)}>
-                    {DIFFICULTIES.map(d => (
-                        <option key={d.value} value={d.value}>{d.label}</option>
-                    ))}
-                </select>
+                    <select className={styles.filterSelect}
+                            value={search.filters.difficulty}
+                            onChange={e => search.setFilter('difficulty', e.target.value)}>
+                        {DIFFICULTIES.map(d => (
+                            <option key={d.value} value={d.value}>{d.label}</option>
+                        ))}
+                    </select>
 
-                <select className={styles.filterSelect}
-                        value={search.filters.sortBy}
-                        onChange={e => search.setFilter('sortBy', e.target.value)}>
-                    {SORT_OPTIONS.map(s => (
-                        <option key={s.value} value={s.value}>{s.label}</option>
-                    ))}
-                </select>
+                    <select className={styles.filterSelect}
+                            value={search.filters.sortBy}
+                            onChange={e => search.setFilter('sortBy', e.target.value)}>
+                        {SORT_OPTIONS.map(s => (
+                            <option key={s.value} value={s.value}>{s.label}</option>
+                        ))}
+                    </select>
 
-                {search.hasActiveFilters && (
-                    <button className={styles.resetBtn}
-                            onClick={search.resetFilters}>
-                        <span className="material-symbols-outlined">filter_alt_off</span>
-                        Limpiar
-                    </button>
-                )}
+                    {search.hasActiveFilters && (
+                        <button className={styles.resetBtn} onClick={search.resetFilters}>
+                            <span className="material-symbols-outlined">filter_alt_off</span>
+                            Limpiar
+                        </button>
+                    )}
                 </div>
             </section>
 
             {/* resultados */}
             <section>
-                {/* contador de resultados */}
                 {!search.loading && search.results && (
                     <div className={styles.resultsHeader}>
                         <p className={styles.resultsCount}>
@@ -155,7 +141,6 @@ export default function HomePage() {
                     </div>
                 )}
 
-                {/* loading skeleton */}
                 {search.loading && (
                     <div className={styles.grid}>
                         {Array.from({ length: 6 }).map((_, i) => (
@@ -164,13 +149,11 @@ export default function HomePage() {
                     </div>
                 )}
 
-                {/* sin resultados */}
                 {!search.loading && search.results?.data.length === 0 && (
                     <EmptyResults hasFilters={search.hasActiveFilters}
-                                onReset={search.resetFilters}/>
+                                  onReset={search.resetFilters} />
                 )}
 
-                {/* grid de recetas */}
                 {!search.loading && search.results?.data.length > 0 && (
                     <div className={styles.grid}>
                         {search.results.data.map(recipe => (
@@ -179,65 +162,12 @@ export default function HomePage() {
                     </div>
                 )}
 
-                {/* paginacion */}
                 {search.results?.pagination.totalPages > 1 && (
                     <Pagination pagination={search.results.pagination}
-                                onPageChange={search.setPage}/>
+                                onPageChange={search.setPage} />
                 )}
             </section>
         </div>
-    )
-}
-
-// componentes
-function RecipeCard({ recipe }) {
-    const totalTime = recipe.prepTimeMinutes + recipe.cookTimeMinutes
-    const isSaved = recipe.savedBy?.length > 0
-
-    return (
-        <Link to={`/recipes/${recipe.id}`} className={styles.card}>
-            <div className={styles.cardImgWrap}>
-                {recipe.imageUrl
-                    ? <img src={recipe.imageUrl} alt={recipe.title} className={styles.cardImg} />
-                    : <div className={styles.cardImgPlaceholder} />
-                }
-                {isSaved && (
-                <span className={styles.savedBadge}>
-                    <span className="material-symbols-outlined">bookmark</span>
-                </span>
-                )}
-                <span className={`${styles.diffBadge} ${styles[recipe.difficulty?.toLowerCase()]}`}>
-                    {DIFF_LABEL[recipe.difficulty]}
-                </span>
-            </div>
-
-            <div className={styles.cardBody}>
-                <div className={styles.cardMeta}>
-                    <span className={styles.cardCategory}>
-                        {CAT_LABEL[recipe.meal?.category] || recipe.meal?.category}
-                    </span>
-                    <span className={styles.cardTime}>⏱ {totalTime} min</span>
-                </div>
-
-                <h3 className={styles.cardTitle}>{recipe.title}</h3>
-
-                <div className={styles.cardFooter}>
-                    <div className={styles.cardAuthor}>
-                        <div className={styles.cardAvatarSmall}>
-                            {recipe.author?.avatarUrl
-                                ? <img src={recipe.author.avatarUrl} alt="" />
-                                : recipe.author?.displayName[0]
-                            }
-                        </div>
-                        <span>{recipe.author?.displayName}</span>
-                    </div>
-                    <div className={styles.cardStats}>
-                        <span>♥ {recipe._count?.savedBy}</span>
-                        <span>💬 {recipe._count?.ratings}</span>
-                    </div>
-                </div>
-            </div>
-        </Link>
     )
 }
 
@@ -288,7 +218,6 @@ function EmptyResults({ hasFilters, onReset }) {
 
 function Pagination({ pagination, onPageChange }) {
     const { page, totalPages } = pagination
-
     return (
         <div className={styles.pagination}>
             <button className={styles.pageBtn}
@@ -296,16 +225,13 @@ function Pagination({ pagination, onPageChange }) {
                     disabled={!pagination.hasPrev}>
                 ← Anterior
             </button>
-
             <div className={styles.pageNumbers}>
                 {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
-                    // ventana de 5 paginas centrada en la actual
                     let n
-                    if (totalPages <= 5)  n = i + 1
-                    else if (page <= 3) n = i + 1
+                    if (totalPages <= 5) n = i + 1
+                    else if (page <= 3)  n = i + 1
                     else if (page >= totalPages - 2) n = totalPages - 4 + i
                     else n = page - 2 + i
-
                     return (
                         <button key={n}
                                 className={`${styles.pageBtn} ${n === page ? styles.pageBtnActive : ''}`}
@@ -315,7 +241,6 @@ function Pagination({ pagination, onPageChange }) {
                     )
                 })}
             </div>
-
             <button className={styles.pageBtn}
                     onClick={() => onPageChange(page + 1)}
                     disabled={!pagination.hasNext}>

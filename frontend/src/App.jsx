@@ -7,6 +7,8 @@ import LoginPage from './pages/Auth/LoginPage.jsx'
 import RegisterPage from './pages/Auth/RegisterPage.jsx'
 import RecipeDetailPage from './pages/Recipe/RecipeDetailPage.jsx'
 import CreateRecipePage from './pages/Recipe/CreateRecipePage.jsx'
+import EditRecipePage from './pages/Recipe/EditRecipePage.jsx' 
+import EditProfilePage from './pages/Profile/EditProfilePage.jsx' 
 import ProfilePage from './pages/Profile/ProfilePage.jsx'
 import FridgePage from './pages/Fridge/FridgePage.jsx'
 import NotFoundPage from './pages/NotFoundPage.jsx'
@@ -51,18 +53,24 @@ export default function App() {
 
                     {/* rutas con layout principal */}
                     <Route element={<MainLayout />}>
-                      <Route path="/" element={<HomePage />} />
-                      <Route path="/recipes/:id" element={<RecipeDetailPage />} />
-                      <Route path="/profile/:username" element={<ProfilePage />} />
-                      <Route path="/recommendations" element={<RecommendationsPage />} />
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/recipes/:id" element={<RecipeDetailPage />} />
+                        <Route path="/profile/:username" element={<ProfilePage />} />
+                        <Route path="/recommendations" element={<RecommendationsPage />} />
 
-                      {/* rutas privadas dentro del layout */}
-                      <Route path="/recipes/new" element={
-                        <PrivateRoute><CreateRecipePage /></PrivateRoute>
-                      } />
-                      <Route path="/fridge" element={
-                        <PrivateRoute><FridgePage /></PrivateRoute>
-                      } />
+                        {/* rutas privadas dentro del layout */}
+                        <Route path="/recipes/new" element={
+                          <PrivateRoute><CreateRecipePage /></PrivateRoute>
+                        } />
+                        <Route path="/recipes/:id/edit" element={
+                          <PrivateRoute><EditRecipePage /></PrivateRoute>
+                        } />
+                        <Route path="/profile/edit" element={
+                          <PrivateRoute><EditProfilePage /></PrivateRoute>
+                        } />
+                        <Route path="/fridge" element={
+                          <PrivateRoute><FridgePage /></PrivateRoute>
+                        } />
                     </Route>
 
                     <Route path="*" element={<NotFoundPage />} />
