@@ -1,7 +1,10 @@
 import prisma from '../config/prisma.js'
 
-export async function getMeals() {
-    return prisma.meal.findMany({ orderBy: { name: 'asc' } })
+export async function getMeals({ category } = {}) {
+    return prisma.meal.findMany({
+        where: category ? { category } : undefined,
+        orderBy: { name: 'asc' },
+    })
 }
 
 export async function createMeal(name, category) {

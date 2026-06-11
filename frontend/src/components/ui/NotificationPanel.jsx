@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import styles from './NotificationPanel.module.css'
 
 const TYPE_ICON = {
@@ -88,9 +89,9 @@ export default function NotificationPanel({
             {/* footer */}
             {notifications.length > 0 && (
                 <div className={styles.footer}>
-                    <a href="/notifications" className={styles.seeAll} onClick={onClose}>
+                    <Link to="/notifications" className={styles.seeAll} onClick={onClose}>
                         Ver todas las notificaciones
-                    </a>
+                    </Link>
                 </div>
             )}
         </div>

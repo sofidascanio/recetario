@@ -21,7 +21,7 @@ export async function createRecipe(authorId, data) {
 }
 
 export async function listRecipes(filters, currentUserId) {
-    const { page, limit, category, difficulty, search, authorId, tags, sortBy } = filters
+    const { page, limit, category, mealId, difficulty, search, authorId, tags, sortBy } = filters
     const skip = (page - 1) * limit
 
     // visibilidad
@@ -54,9 +54,10 @@ export async function listRecipes(filters, currentUserId) {
         ? { AND: conditions }
         : conditions[0] ?? {}
 
-    if (category)   where.meal       = { category }
+    if (category) where.meal = { category }
+    if (mealId) where.mealId = mealId   // filtro por comida específica (Meal.id)
     if (difficulty) where.difficulty = difficulty
-    if (authorId)   where.authorId   = authorId
+    if (authorId) where.authorId  = authorId
     if (tags) {
         const tagList = tags.split(',').map(t => t.trim().toLowerCase())
         where.tags = { hasSome: tagList }
@@ -121,7 +122,7 @@ export async function updateRecipe(recipeId, authorId, data) {
             data: {
                 ...recipeData,
                 ...(ingredients && { ingredients: { create: ingredients } }),
-                ...(steps       && { steps:       { create: steps } }),
+                ...(steps && { steps: { create: steps } }),
             },
             include: recipeIncludes(),
         })

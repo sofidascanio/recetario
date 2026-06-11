@@ -14,6 +14,7 @@ import FridgePage from './pages/Fridge/FridgePage.jsx'
 import NotFoundPage from './pages/NotFoundPage.jsx'
 import { ThemeProvider } from './contexts/ThemeContext.jsx'
 import RecommendationsPage from './pages/Recommendations/RecommendationsPage.jsx'
+import NotificationsPage from './pages/Notifications/NotificationsPage.jsx'
 
 // ruta que redirige si no hay sesion
 function PrivateRoute({ children }) {
@@ -32,7 +33,7 @@ function GuestRoute({ children }) {
 function AppLoader() {
     return (
         <div className="app-loader">
-          <span className="app-loader__spinner" />
+          	<span className="app-loader__spinner" />
         </div>
     )
 }
@@ -45,10 +46,10 @@ export default function App() {
                   <Routes>
                     {/* rutas guest, sin layout */}
                     <Route path="/login" element={
-                      <GuestRoute><LoginPage /></GuestRoute>
+                      	<GuestRoute><LoginPage /></GuestRoute>
                     } />
                     <Route path="/register" element={
-                      <GuestRoute><RegisterPage /></GuestRoute>
+                      	<GuestRoute><RegisterPage /></GuestRoute>
                     } />
 
                     {/* rutas con layout principal */}
@@ -60,16 +61,19 @@ export default function App() {
 
                         {/* rutas privadas dentro del layout */}
                         <Route path="/recipes/new" element={
-                          <PrivateRoute><CreateRecipePage /></PrivateRoute>
+                          	<PrivateRoute><CreateRecipePage /></PrivateRoute>
                         } />
                         <Route path="/recipes/:id/edit" element={
-                          <PrivateRoute><EditRecipePage /></PrivateRoute>
+                          	<PrivateRoute><EditRecipePage /></PrivateRoute>
                         } />
                         <Route path="/profile/edit" element={
-                          <PrivateRoute><EditProfilePage /></PrivateRoute>
+                          	<PrivateRoute><EditProfilePage /></PrivateRoute>
                         } />
                         <Route path="/fridge" element={
-                          <PrivateRoute><FridgePage /></PrivateRoute>
+                          	<PrivateRoute><FridgePage /></PrivateRoute>
+                        } />
+                        <Route path="/notifications" element={
+                          	<PrivateRoute><NotificationsPage /></PrivateRoute>
                         } />
                     </Route>
 

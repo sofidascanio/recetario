@@ -74,11 +74,9 @@ export default function EditProfilePage() {
             <div className={styles.container}>
 
                 <div className={styles.header}>
-                    <button
-                        className={styles.backBtn}
-                        onClick={() => navigate(-1)}
-                        type="button"
-                    >
+                    <button className={styles.backBtn}
+                            onClick={() => navigate(-1)}
+                            type="button">
                         ← Volver
                     </button>
                     <h1 className={styles.title}>Editar perfil</h1>

@@ -68,16 +68,16 @@ export function useNotifications() {
         }
     }, [user?.id])
 
-    // EventSource con token en query param 
-    // necesita actualizar el middleware de auth para soportarlo
     const markAsRead = useCallback(async (ids) => {
         await notificationsService.markAsRead(ids)
+
         setNotifications(prev =>
-            prev.map(n =>
-                !ids || ids.includes(n.id) ? { ...n, read: true } : n
-            )
+            prev.map(n => !ids || ids.includes(n.id) ? { ...n, read: true } : n)
         )
-        setUnreadCount(0)
+
+        // vuelve a pedir el conteo real de notificaciones al back
+        const { count } = await notificationsService.getUnread()
+        setUnreadCount(count)
     }, [])
 
     const markAllRead = useCallback(async () => {

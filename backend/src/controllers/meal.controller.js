@@ -7,9 +7,12 @@ const mealSchema = z.object({
     category: z.enum(['BREAKFAST','LUNCH','DINNER','SNACK','DESSERT','DRINK','APPETIZER']),
 })
 
+// GET /api/v1/meals?category=DINNER
+// El query param category es opcional, si no viene, devuelve todas
 export async function getMeals(req, res, next) {
     try {
-        res.json(await mealService.getMeals())
+        const { category } = req.query
+        res.json(await mealService.getMeals({ category }))
     } catch (err) { next(err) }
 }
 

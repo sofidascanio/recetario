@@ -46,6 +46,8 @@ export const listRecipesSchema = z.object({
         'BREAKFAST', 'LUNCH', 'DINNER',
         'SNACK', 'DESSERT', 'DRINK', 'APPETIZER',
     ]).optional(),
+    // filtro por comida especifica 
+    mealId: z.string().min(1).optional(),
     difficulty: z.enum(['EASY', 'MEDIUM', 'HARD']).optional(),
     search: z.string().trim().optional(),
     authorId: z.string().optional(),

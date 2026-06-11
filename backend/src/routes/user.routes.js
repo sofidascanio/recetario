@@ -7,8 +7,9 @@ import { authenticate } from '../middlewares/auth.middleware.js'
 
 const router = Router()
 
-router.get('/:username', optionalAuth, userController.getProfile)
 router.get('/:username/recipes', optionalAuth, userController.getUserRecipes)
+router.get('/:username/saved', authenticate, userController.getSavedRecipes)
+router.get('/:username', optionalAuth, userController.getProfile)
 
 router.patch(
     '/me',

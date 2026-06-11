@@ -5,6 +5,7 @@ import { useDebounce } from './useDebounce.js'
 const INITIAL_FILTERS = {
     search: '',
     category: '',
+    mealId: '',
     difficulty: '',
     sortBy: 'recent',
     tags: '',
@@ -43,11 +44,11 @@ export function useRecipeSearch() {
 
         useEffect(() => {
             setPage(1)
-        }, [debouncedSearch, filters.category, filters.difficulty, filters.sortBy, filters.tags])
+        }, [debouncedSearch, filters.category, filters.mealId, filters.difficulty, filters.sortBy, filters.tags])
 
         useEffect(() => {
             fetchRecipes(page)
-        }, [page, debouncedSearch, filters.category, filters.difficulty, filters.sortBy, filters.tags])
+        }, [page, debouncedSearch, filters.category, filters.mealId, filters.difficulty, filters.sortBy, filters.tags])
 
         function setFilter(key, value) {
             setFilters(prev => ({ ...prev, [key]: value }))

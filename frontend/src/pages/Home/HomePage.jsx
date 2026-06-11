@@ -3,6 +3,7 @@ import { useAuth } from '../../hooks/useAuth.js'
 import { useQuery } from '../../hooks/useApi.js'
 import { Link } from 'react-router-dom'
 import RecipeCard from '../../components/ui/RecipeCard.jsx'
+import { mealsService } from '../../services/meals.service.js'
 import styles from './HomePage.module.css'
 
 const CATEGORIES = [
@@ -36,6 +37,19 @@ export default function HomePage() {
         () => user ? fetch('/api/v1/users/feed').then(r => r.json()) : Promise.resolve(null),
         [user?.id]
     )
+
+    // lista de comidas para el dropdown si hay categoria seleccionada
+    const { data: meals } = useQuery(
+        () => mealsService.list(search.filters.category ? { category: search.filters.category } : {}),
+        [search.filters.category]
+    )
+
+    // si cambia la categoria, resetea mealId para evitar que quede
+    // seleccionada una comida que ya no pertenece a esa categoría
+    function handleCategoryChange(value) {
+        search.setFilter('category', value)
+        search.setFilter('mealId', '')
+    }
 
     return (
         <div className={styles.page}>
@@ -96,13 +110,23 @@ export default function HomePage() {
                                 className={`${styles.categoryChip} ${
                                     search.filters.category === cat.value ? styles.chipActive : ''
                         }`}
-                        onClick={() => search.setFilter('category', cat.value)}>
+                        onClick={() => handleCategoryChange(cat.value)}>
                             {cat.label}
                         </button>
                     ))}
                 </div>
 
                 <div className={styles.filterRow}>
+                    {/* filtro por comida especifica */}
+                    <select className={styles.filterSelect}
+                            value={search.filters.mealId}
+                            onChange={e => search.setFilter('mealId', e.target.value)}>
+                        <option value="">Cualquier comida</option>
+                        {meals?.map(meal => (
+                            <option key={meal.id} value={meal.id}>{meal.name}</option>
+                        ))}
+                    </select>
+
                     <select className={styles.filterSelect}
                             value={search.filters.difficulty}
                             onChange={e => search.setFilter('difficulty', e.target.value)}>

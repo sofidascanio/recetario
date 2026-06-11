@@ -65,3 +65,47 @@ export async function updateProfile(userId, data) {
         },
     })
 }
+
+export async function getSavedRecipes(userId, { page = 1, limit = 12 } = {}) {
+    const skip = (page - 1) * limit
+
+    const [total, saved] = await Promise.all([
+        prisma.savedRecipe.count({ where: { userId } }),
+        prisma.savedRecipe.findMany({
+            where: { userId },
+            include: {
+                recipe: {
+                    include: {
+                        author: {
+                            select: { id: true, username: true, displayName: true, avatarUrl: true },
+                        },
+                        meal: { select: { id: true, name: true, category: true } },
+                        _count: { select: { savedBy: true, ratings: true, comments: true } },
+                    },
+                },
+            },
+            orderBy: { savedAt: 'desc' },
+            skip,
+            take: limit,
+        }),
+    ])
+
+    // aplana, devuelve las recetas directamente, no el wrapper de SavedRecipe
+    const recipes = saved.map(s => ({
+        ...s.recipe,
+        savedAt: s.savedAt,
+        savedBy: [{ userId }], // para que RecipeCard muestre el icono de guardado
+    }))
+
+    return {
+        data: recipes,
+        pagination: {
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit),
+            hasNext: page < Math.ceil(total / limit),
+            hasPrev: page > 1,
+        },
+    }
+}
