@@ -90,4 +90,6 @@ html.dark {
   --color-on-error: #690005;
   --color-background: #131412;
   --color-on-background: #e4e2de;
+  --color-on-tertiary-fixed: #000000;
+
 }

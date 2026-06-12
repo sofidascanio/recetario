@@ -1,0 +1,476 @@
+/* indicador de pasos */
+.indicator {
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+
+.indicatorRow {
+    display: flex;
+    align-items: center;
+}
+
+.dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--color-outline-variant);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--color-on-surface-variant);
+    transition: all .2s;
+}
+
+.dotActive {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.dotDone {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-on-primary);
+}
+
+.line {
+    width: 32px;
+    height: 2px;
+    background: var(--color-outline-variant);
+    transition: background .2s;
+}
+
+.lineDone { background: var(--color-primary); }
+
+/* paso */
+.step {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background: var(--color-surface-container-lowest);
+    border-radius: 20px;
+    padding: 28px;
+    box-shadow: 0 2px 12px rgba(77,98,67,.07);
+    margin-bottom: 24px;
+}
+
+.stepTitle {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--color-on-surface);
+}
+
+/* campos */
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    position: relative;
+}
+
+.label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-on-surface-variant);
+}
+
+.field input,
+.field select {
+    padding: 11px 14px;
+    border: 1.5px solid var(--color-outline-variant);
+    border-radius: 10px;
+    background: var(--color-surface-container-low);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    color: var(--color-on-surface);
+    outline: none;
+    transition: border-color .15s;
+}
+
+.field textarea {
+    padding: 11px 14px;
+    border: 1.5px solid var(--color-outline-variant);
+    border-radius: 10px;
+    background: var(--color-surface-container-low);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    color: var(--color-on-surface);
+    outline: none;
+    transition: border-color .15s;
+    resize: vertical;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+    border-color: var(--color-primary);
+}
+
+.row {
+    display: flex;
+    gap: 12px;
+}
+
+.row > * {
+    flex: 1;
+    min-width: 0;
+}
+
+.fieldError {
+    font-size: 12px;
+    color: var(--color-error);
+}
+
+.fieldHint {
+    font-size: 12px;
+    color: var(--color-on-surface-variant);
+}
+
+.inlineBtn {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: underline;
+}
+
+/* dificultad */
+.difficultyPicker { display: flex; gap: 8px; }
+
+.diffBtn {
+    flex: 1;
+    padding: 10px;
+    border: 1.5px solid var(--color-outline-variant);
+    border-radius: 10px;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-on-surface-variant);
+    cursor: pointer;
+    transition: all .15s;
+}
+
+.diffActive {
+    border-color: var(--color-primary);
+    background: var(--color-primary-fixed);
+    color: var(--color-on-primary-fixed-variant);
+}
+
+/* toggle de visibilidad */
+.toggleRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--color-surface-container-low);
+    border-radius: 10px;
+}
+
+.toggleLabel { font-size: 14px; color: var(--color-on-surface); }
+
+.toggle {
+    width: 44px;
+    height: 26px;
+    border-radius: 9999px;
+    border: none;
+    background: var(--color-outline-variant);
+    cursor: pointer;
+    position: relative;
+    transition: background .2s;
+    padding: 0;
+}
+
+.toggleOn { background: var(--color-primary); }
+
+.toggleThumb {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: white;
+    transition: transform .2s;
+}
+
+.toggleOn .toggleThumb { transform: translateX(18px); }
+
+/* tags */
+.tagList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--color-primary-fixed);
+    color: var(--color-on-primary-fixed-variant);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 9999px;
+}
+
+.tag button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: inherit;
+    font-size: 16px;
+    padding: 0;
+    line-height: 1;
+}
+
+/* preview de imagen */
+.imagePreview {
+    width: 100%;
+    max-height: 160px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-top: 6px;
+}
+
+/* busqueda de ingredientes */
+.ingSearch {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: var(--color-surface-container-low);
+    border-radius: 14px;
+    padding: 16px;
+}
+
+.searchRow {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+.searchField {
+    flex: 1;
+    position: relative;
+}
+
+.searchField input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--color-outline-variant);
+    border-radius: 10px;
+    background: var(--color-surface-container-lowest);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--color-on-surface);
+    outline: none;
+}
+
+.searchField input:focus { border-color: var(--color-primary); }
+
+.searchDropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--color-surface-container-lowest);
+    border: 1.5px solid var(--color-outline-variant);
+    border-radius: 10px;
+    list-style: none;
+    z-index: 20;
+    box-shadow: 0 8px 24px rgba(0,0,0,.1);
+    margin-top: 4px;
+    overflow: hidden;
+}
+
+.searchDropdown li {
+    padding: 10px 14px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--color-on-surface);
+    transition: background .1s;
+}
+
+.searchDropdown li:hover { background: var(--color-surface-container-low); }
+
+.createNew {
+    display: flex !important;
+    align-items: center;
+    gap: 6px;
+    color: var(--color-primary) !important;
+    font-weight: 600;
+    border-top: 1px solid var(--color-outline-variant);
+}
+
+.qtyInput {
+    width: 80px;
+    padding: 10px 10px;
+    border: 1.5px solid var(--color-outline-variant);
+    border-radius: 10px;
+    background: var(--color-surface-container-lowest);
+    font-size: 14px;
+    outline: none;
+    text-align: center;
+}
+
+.unitSelect {
+    padding: 10px 10px;
+    border: 1.5px solid var(--color-outline-variant);
+    border-radius: 10px;
+    background: var(--color-surface-container-lowest);
+    font-size: 13px;
+    outline: none;
+    cursor: pointer;
+}
+
+.notesInput {
+    padding: 10px 14px;
+    border: 1.5px solid var(--color-outline-variant);
+    border-radius: 10px;
+    background: var(--color-surface-container-lowest);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--color-on-surface);
+    outline: none;
+}
+
+.addIngBtn {
+    padding: 10px 20px;
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+    border: none;
+    border-radius: 10px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    align-self: flex-start;
+    transition: opacity .15s;
+}
+
+.addIngBtn:disabled { opacity: .45; cursor: not-allowed; }
+
+/* lista de ingredientes */
+.ingList {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.ingItem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--color-surface-container-lowest);
+    border-radius: 10px;
+    border: 1px solid var(--color-outline-variant);
+}
+
+.ingOrder {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--color-primary-fixed);
+    color: var(--color-on-primary-fixed-variant);
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.ingInfo { flex: 1; }
+.ingName { display: block; font-weight: 600; font-size: 14px; color: var(--color-on-surface); }
+.ingMeta { font-size: 12px; color: var(--color-on-surface-variant); }
+
+/* pasos */
+.stepsHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.addStepBtn {
+    padding: 8px 16px;
+    background: var(--color-primary-fixed);
+    color: var(--color-on-primary-fixed-variant);
+    border: none;
+    border-radius: 9999px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity .15s;
+}
+
+.emptySteps {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 40px;
+    color: var(--color-on-surface-variant);
+    text-align: center;
+}
+
+.emptySteps span { font-size: 40px; }
+
+.stepsList { list-style: none; display: flex; flex-direction: column; gap: 16px; }
+
+.stepItem {
+    padding: 16px;
+    border: 1.5px solid var(--color-outline-variant);
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.stepItemHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stepNum {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.durationInput { max-width: 120px; }
+
+.removeBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-outline);
+    padding: 4px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    transition: color .12s, background .12s;
+}
+
+.removeBtn:hover {
+    background: var(--color-error-container);
+    color: var(--color-error);
+}

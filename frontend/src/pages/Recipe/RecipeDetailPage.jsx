@@ -9,6 +9,15 @@ import { recommendationsService } from '../../services/recommendations.service.j
 import HorizontalScroll from '../../components/ui/HorizontalScroll.jsx'
 import RecipeCard from '../../components/ui/RecipeCard.jsx'
 
+const CATEGORY_LABEL = {
+    BREAKFAST: 'Desayuno',
+    LUNCH: 'Almuerzo',
+    DINNER: 'Cena',
+    SNACK: 'Snack',
+    DESSERT: 'Postre',
+    DRINK: 'Bebida',
+}
+
 const DIFFICULTY_LABEL = {
     EASY: 'Fácil',
     MEDIUM: 'Intermedio',
@@ -77,7 +86,7 @@ export default function RecipeDetailPage() {
               }
               <div className={styles.heroOverlay}>
                     <div className={styles.heroBadges}>
-                        <span className={styles.badge}>{recipe.meal?.category}</span>
+                        <span className={styles.badge}>  {CATEGORY_LABEL[recipe.meal?.category]} </span>
                         {recipe.tags?.slice(0, 2).map(tag => (
                             <span key={tag} className={styles.badgeOutline}>{tag}</span>
                         ))}

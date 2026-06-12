@@ -29,14 +29,14 @@ npm --version    # >= 10
 psql --version   # PostgreSQL 15 o 16
 ```
 
-### 1. Clonar el repositorio
+#### 1. Clonar el repositorio
 
 ```bash
 git clone https://github.com/sofidascanio/recetario
 cd recetario
 ```
 
-### 2. Configurar PostgreSQL
+#### 2. Configurar PostgreSQL
 
 ```bash
 # Iniciar PostgreSQL
@@ -53,7 +53,7 @@ CREATE DATABASE recetario_dev OWNER recetario_user;
 \q
 ```
 
-### 3. Configurar el backend
+#### 3. Configurar el backend
 
 ```bash
 cd backend
@@ -74,7 +74,7 @@ npm run dev
 
 El backend esta disponible en `http://localhost:3000`.
 
-### 4. Configurar el frontend
+#### 4. Configurar el frontend
 
 ```bash
 cd ../frontend
@@ -89,7 +89,7 @@ npm run dev
 
 El frontend esta disponible en `http://localhost:5173`.
 
-### 5. Comandos útiles
+#### 5. Comandos útiles
 
 ```bash
 # Backend
