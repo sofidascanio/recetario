@@ -1,42 +1,29 @@
-export async function seedMeals(prisma) {
-    const mealsData = {
-        pizza: {
-            name: 'Pizza',
-            category: 'DINNER',
-        },
-        empanadas: {
-            name: 'Empanadas',
-            category: 'APPETIZER',
-        },
-        milanesaNapolitana: {
-            name: 'Milanesa a la napolitana',
-            category: 'LUNCH',
-        },
-        risotto: {
-            name: 'Risotto',
-            category: 'DINNER',
-        },
-        tortillasEspanola: {
-            name: 'Tortilla española',
-            category: 'LUNCH',
-        },
-        medialunas: {
-            name: 'Medialunas',
-            category: 'BREAKFAST',
-        },
-        cheesecake: {
-            name: 'Cheesecake',
-            category: 'DESSERT',
-        },
+import { MealCategory } from '@prisma/client'
+
+export async function createMeals(prisma) {
+    console.log('Creando comidas...')
+
+    const mealData = [
+        { name: 'Pizza', category: MealCategory.LUNCH },
+        { name: 'Ensalada César', category: MealCategory.APPETIZER },
+        { name: 'Tortilla de Patatas', category: MealCategory.LUNCH },
+        { name: 'Pasta Carbonara', category: MealCategory.LUNCH },
+        { name: 'Brownie de Chocolate', category: MealCategory.DESSERT },
+        { name: 'Batido de Frutos Rojos', category: MealCategory.DRINK },
+        { name: 'Huevos Rancheros', category: MealCategory.BREAKFAST },
+        { name: 'Ceviche', category: MealCategory.APPETIZER },
+        { name: 'Risotto de Setas', category: MealCategory.DINNER },
+        { name: 'Galletas de Avena', category: MealCategory.SNACK },
+    ]
+
+    const meals = []
+    for (const data of mealData) {
+        const meal = await prisma.meal.upsert({
+            where: { name: data.name },
+            update: {},
+            create: data,
+        })
+        meals.push(meal)
     }
-
-    const entries = await Promise.all(
-        Object.entries(mealsData).map(([key, data]) =>
-        prisma.meal
-            .upsert({ where: { name: data.name }, update: {}, create: data })
-            .then((record) => [key, record])
-        )
-    )
-
-    return Object.fromEntries(entries)
+    return meals
 }

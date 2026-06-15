@@ -1,22 +1,24 @@
-import { seedUsers } from './users.js'
-import { seedIngredients } from './ingredients.js'
-import { seedMeals } from './meals.js'
-import { seedRecipes } from './recipes.js'
+import { cleanDatabase } from './clean.js'
+import { createMeals } from './meals.js'
+import { createIngredients } from './ingredients.js'
+import { createUsers } from './users.js'
+import { createRecipes } from './recipes.js'
+import { createSocialInteractions } from './social.js'
+import { createFridgeItems } from './fridge.js'
+import { createFollowsAndNotifications } from './follows-notifications.js'
 
 export async function runSeed(prisma) {
-    console.log('Iniciando seed...\n')
+    console.log('Iniciando seed...')
 
-    const users = await seedUsers(prisma)
-    console.log(`Usuarios: ${Object.keys(users).length} creados`)
+    await cleanDatabase(prisma)
 
-    const ingredients = await seedIngredients(prisma)
-    console.log(`Ingredientes: ${Object.keys(ingredients).length} creados`)
+    const meals = await createMeals(prisma)
+    const ingredients = await createIngredients(prisma)
+    const users = await createUsers(prisma)
+    const recipes = await createRecipes(prisma, meals, users, ingredients)
+    await createSocialInteractions(prisma, users, recipes)
+    await createFridgeItems(prisma, users, ingredients)
+    await createFollowsAndNotifications(prisma, users, recipes)
 
-    const meals = await seedMeals(prisma)
-    console.log(`Comidas: ${Object.keys(meals).length} creadas`)
-
-    await seedRecipes(prisma, { users, ingredients, meals })
-    console.log(`Recetas creadas`)
-
-    console.log('\nSeed completado exitosamente.')
+    console.log('Seed completado exitosamente')
 }

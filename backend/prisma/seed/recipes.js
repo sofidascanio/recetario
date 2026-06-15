@@ -1,110 +1,176 @@
-export async function seedRecipes(prisma, { users, ingredients, meals }) {
-    const recipes = [
-        // PIZZA MARGHERITA — autor: chef
-        {
-            title: 'Pizza Margherita Clásica',
-            description: 'La pizza más simple y deliciosa. Masa casera, salsa de tomate y mozzarella fresca.',
-            difficulty: 'MEDIUM',
-            prepTimeMinutes: 90,
-            cookTimeMinutes: 15,
-            servings: 4,
-            tags: ['italiana', 'vegetariana', 'clásica'],
-            authorId: users.chef.id,
-            mealId: meals.pizza.id,
-            ingredients: {
-                create: [
-                    { ingredientId: ingredients.harina000.id,    quantity: 500,  unit: 'GRAM',       order: 1 },
-                    { ingredientId: ingredients.levaduraSeca.id, quantity: 7,    unit: 'GRAM',       order: 2 },
-                    { ingredientId: ingredients.sal.id,          quantity: 1,    unit: 'TEASPOON',   order: 3, notes: 'al gusto' },
-                    { ingredientId: ingredients.aceiteOliva.id,  quantity: 2,    unit: 'TABLESPOON', order: 4 },
-                    { ingredientId: ingredients.salsaTomate.id,  quantity: 200,  unit: 'MILLILITER', order: 5 },
-                    { ingredientId: ingredients.mozarella.id,    quantity: 250,  unit: 'GRAM',       order: 6 },
-                    { ingredientId: ingredients.oregano.id,      quantity: 1,    unit: 'TEASPOON',   order: 7 },
-                ],
-            },
-            steps: {
-                create: [
-                    { order: 1, title: 'Hacer la masa',    description: 'Mezclar harina, levadura, sal y aceite. Agregar agua tibia de a poco hasta formar una masa lisa. Amasar 10 minutos.', durationMin: 15 },
-                    { order: 2, title: 'Dejar leudar',     description: 'Cubrir con un repasador y dejar reposar en un lugar cálido por 1 hora, hasta que duplique su tamaño.', durationMin: 60 },
-                    { order: 3, title: 'Armar la pizza',   description: 'Estirar la masa en la pizzera aceitada. Cubrir con salsa de tomate, mozzarella y orégano.' },
-                    { order: 4, title: 'Hornear',          description: 'Llevar al horno precalentado a 250°C por 15 minutos o hasta que los bordes estén dorados.', durationMin: 15 },
-                ],
-            },
-        },
+import { Difficulty, Unit } from '@prisma/client'
 
-        // EMPANADAS DE CARNE. autor: home
-        {
-            title: 'Empanadas de Carne Criollas',
-            description: 'Empanadas argentinas con el relleno bien jugoso y especiado.',
-            difficulty: 'MEDIUM',
-            prepTimeMinutes: 60,
-            cookTimeMinutes: 25,
-            servings: 6,
-            tags: ['argentina', 'carne', 'horno'],
-            authorId: users.home.id,
-            mealId: meals.empanadas.id,
-            ingredients: {
-                create: [
-                    { ingredientId: ingredients.harina0000.id,   quantity: 500,  unit: 'GRAM',       order: 1 },
-                    { ingredientId: ingredients.manteca.id,      quantity: 100,  unit: 'GRAM',       order: 2 },
-                    { ingredientId: ingredients.huevo.id,        quantity: 1,    unit: 'UNIT',       order: 3 },
-                    { ingredientId: ingredients.sal.id,          quantity: 1,    unit: 'TEASPOON',   order: 4 },
-                    { ingredientId: ingredients.carneMolida.id,  quantity: 500,  unit: 'GRAM',       order: 5 },
-                    { ingredientId: ingredients.cebolla.id,      quantity: 2,    unit: 'UNIT',       order: 6 },
-                    { ingredientId: ingredients.pimiento.id,     quantity: 1,    unit: 'UNIT',       order: 7 },
-                    { ingredientId: ingredients.pimentonDulce.id,quantity: 1,    unit: 'TEASPOON',   order: 8 },
-                    { ingredientId: ingredients.aceiteOliva.id,  quantity: 2,    unit: 'TABLESPOON', order: 9 },
-                ],
-            },
-            steps: {
-                create: [
-                    { order: 1, title: 'Hacer la masa',    description: 'Unir harina, manteca blanda, huevo y sal. Amasar hasta obtener una masa tierna. Dejar reposar 20 minutos en la heladera.', durationMin: 25 },
-                    { order: 2, title: 'Preparar el relleno', description: 'Rehogar cebolla y pimiento en aceite. Agregar la carne molida y cocinar. Condimentar con sal, pimienta y pimentón. Dejar enfriar.', durationMin: 20 },
-                    { order: 3, title: 'Armar las empanadas', description: 'Estirar la masa y cortar discos de 12 cm. Poner una cucharada de relleno en cada uno y repulgar bien.' },
-                    { order: 4, title: 'Hornear',          description: 'Pintar con huevo batido y hornear a 200°C por 25 minutos hasta que estén doradas.', durationMin: 25 },
-                ],
-            },
-        },
+export async function createRecipes(prisma, meals, users, ingredients) {
+    console.log('Creando recetas...')
 
-        // RISOTTO DE POLLO. autor: chef
+    const getMeal = (name) => meals.find(m => m.name === name)
+    const getUser = (username) => users.find(u => u.username === username)
+
+    const recipesData = [
         {
-            title: 'Risotto de Pollo y Espinaca',
-            description: 'Un risotto cremoso con pollo tierno y espinaca fresca. Perfecto para una cena elegante.',
-            difficulty: 'HARD',
+            title: 'Tortilla de Patatas Tradicional',
+            description: 'La clásica tortilla española, jugosa por dentro y dorada por fuera.',
+            imageUrl: 'https://cdn.pixabay.com/photo/2019/05/31/12/42/tortilla-4242357_640.jpg',
+            difficulty: Difficulty.MEDIUM,
             prepTimeMinutes: 15,
-            cookTimeMinutes: 35,
+            cookTimeMinutes: 25,
+            servings: 4,
+            tags: ['española', 'tradicional', 'vegetariana'],
+            author: getUser('anacocina'),
+            meal: getMeal('Tortilla de Patatas'),
+            ingredients: [
+                { ingredient: ingredients['Patata'], quantity: 4, unit: Unit.UNIT, notes: 'peladas y cortadas en láminas finas', order: 1 },
+                { ingredient: ingredients['Huevo'], quantity: 6, unit: Unit.UNIT, notes: '', order: 2 },
+                { ingredient: ingredients['Cebolla'], quantity: 1, unit: Unit.UNIT, notes: 'picada finamente (opcional)', order: 3 },
+                { ingredient: ingredients['Aceite de oliva'], quantity: 200, unit: Unit.MILLILITER, notes: 'para freír', order: 4 },
+                { ingredient: ingredients['Sal'], quantity: 1, unit: Unit.TO_TASTE, notes: 'al gusto', order: 5 },
+            ],
+            steps: [
+                { order: 1, title: 'Preparar patatas', description: 'Pelar y cortar las patatas en láminas finas.', durationMin: 10 },
+                { order: 2, title: 'Freír patatas y cebolla', description: 'Freír a fuego medio-bajo hasta que estén tiernas.', durationMin: 20 },
+                { order: 3, title: 'Batir huevos', description: 'Batir los huevos con sal.', durationMin: 2 },
+                { order: 4, title: 'Mezclar', description: 'Escurrir y mezclar con huevo. Reposar 5 minutos.', durationMin: 5 },
+                { order: 5, title: 'Cuajar la tortilla', description: 'Cuajar en sartén y dar la vuelta.', durationMin: 8 },
+            ],
+        },
+        {
+            title: 'Spaghetti alla Carbonara',
+            description: 'Receta italiana auténtica sin nata, solo huevo, queso y panceta.',
+            imageUrl: 'https://cdn.pixabay.com/photo/2016/03/05/19/02/spaghetti-1238519_640.jpg',
+            difficulty: Difficulty.EASY,
+            prepTimeMinutes: 10,
+            cookTimeMinutes: 15,
             servings: 2,
-            tags: ['italiano', 'cremoso', 'pollo'],
-            authorId: users.chef.id,
-            mealId: meals.risotto.id,
-            ingredients: {
-                create: [
-                    { ingredientId: ingredients.arroz.id,        quantity: 320,  unit: 'GRAM',       order: 1, notes: 'tipo arborio o carnaroli' },
-                    { ingredientId: ingredients.pollo.id,        quantity: 300,  unit: 'GRAM',       order: 2, notes: 'en cubos pequeños' },
-                    { ingredientId: ingredients.espinaca.id,     quantity: 100,  unit: 'GRAM',       order: 3 },
-                    { ingredientId: ingredients.cebolla.id,      quantity: 1,    unit: 'UNIT',       order: 4, notes: 'picada fina' },
-                    { ingredientId: ingredients.ajo.id,          quantity: 2,    unit: 'UNIT',       order: 5, notes: 'dientes' },
-                    { ingredientId: ingredients.caldoPollo.id,   quantity: 1,    unit: 'LITER',      order: 6, notes: 'caliente' },
-                    { ingredientId: ingredients.cremaDoble.id,   quantity: 100,  unit: 'MILLILITER', order: 7 },
-                    { ingredientId: ingredients.quesoRallado.id, quantity: 50,   unit: 'GRAM',       order: 8 },
-                    { ingredientId: ingredients.aceiteOliva.id,  quantity: 2,    unit: 'TABLESPOON', order: 9 },
-                    { ingredientId: ingredients.sal.id,          quantity: 1,    unit: 'TO_TASTE',   order: 10 },
-                    { ingredientId: ingredients.pimienta.id,     quantity: 1,    unit: 'PINCH',      order: 11 },
-                ],
-            },
-            steps: {
-                create: [
-                    { order: 1, title: 'Dorar el pollo',      description: 'Sellar el pollo en una sartén con aceite a fuego alto. Reservar.', durationMin: 5 },
-                    { order: 2, title: 'Sofrito base',        description: 'En la misma sartén, rehogar cebolla y ajo a fuego medio hasta transparentar.', durationMin: 5 },
-                    { order: 3, title: 'Tostar el arroz',     description: 'Agregar el arroz y cocinar 2 minutos removiendo constantemente hasta que esté ligeramente translúcido.', durationMin: 2 },
-                    { order: 4, title: 'Incorporar el caldo', description: 'Agregar el caldo caliente de a cucharones, de a uno por vez, revolviendo constantemente y esperando que se absorba antes del siguiente. Proceso de 20 minutos.', durationMin: 20 },
-                    { order: 5, title: 'Terminar el risotto', description: 'Cuando el arroz esté al dente, incorporar el pollo reservado, la espinaca, la crema y el queso rallado. Salpimentar y servir de inmediato.', durationMin: 3 },
-                ],
-            },
+            tags: ['italiana', 'pasta', 'rápida'],
+            author: getUser('chefjuan'),
+            meal: getMeal('Pasta Carbonara'),
+            ingredients: [
+                { ingredient: ingredients['Huevo'], quantity: 2, unit: Unit.UNIT, notes: 'temperatura ambiente', order: 1 },
+                { ingredient: ingredients['Queso parmesano'], quantity: 50, unit: Unit.GRAM, notes: 'recién rallado', order: 2 },
+                { ingredient: ingredients['Panceta'], quantity: 100, unit: Unit.GRAM, notes: 'taquitos', order: 3 },
+                { ingredient: ingredients['Ajo'], quantity: 1, unit: Unit.UNIT, notes: 'diente opcional', order: 4 },
+            ],
+            steps: [
+                { order: 1, title: 'Cocer pasta', description: 'Cocer spaghetti en agua con sal.', durationMin: 10 },
+                { order: 2, title: 'Preparar salsa', description: 'Batir huevos con queso y pimienta.', durationMin: 2 },
+                { order: 3, title: 'Dorar panceta', description: 'Dorar panceta sin aceite.', durationMin: 5 },
+                { order: 4, title: 'Mezclar', description: 'Mezclar pasta, panceta y salsa de huevo.', durationMin: 1 },
+            ],
+        },
+        {
+            title: 'Brownie de Chocolate Intenso',
+            description: 'Brownie crujiente por fuera y tierno por dentro.',
+            imageUrl: 'https://cdn.pixabay.com/photo/2019/02/22/18/58/brownie-4014098_640.jpg',
+            difficulty: Difficulty.EASY,
+            prepTimeMinutes: 15,
+            cookTimeMinutes: 25,
+            servings: 8,
+            tags: ['dulce', 'chocolate', 'postre'],
+            author: getUser('mariadulce'),
+            meal: getMeal('Brownie de Chocolate'),
+            ingredients: [
+                { ingredient: ingredients['Chocolate negro'], quantity: 200, unit: Unit.GRAM, notes: '70% cacao', order: 1 },
+                { ingredient: ingredients['Mantequilla'], quantity: 150, unit: Unit.GRAM, notes: 'temperatura ambiente', order: 2 },
+                { ingredient: ingredients['Azúcar'], quantity: 200, unit: Unit.GRAM, notes: '', order: 3 },
+                { ingredient: ingredients['Huevo'], quantity: 3, unit: Unit.UNIT, notes: '', order: 4 },
+                { ingredient: ingredients['Harina de trigo'], quantity: 100, unit: Unit.GRAM, notes: '', order: 5 },
+                { ingredient: ingredients['Sal'], quantity: 1, unit: Unit.PINCH, notes: '', order: 6 },
+            ],
+            steps: [
+                { order: 1, title: 'Derretir', description: 'Derretir chocolate y mantequilla.', durationMin: 5 },
+                { order: 2, title: 'Mezclar', description: 'Añadir azúcar y huevos uno a uno.', durationMin: 5 },
+                { order: 3, title: 'Añadir harina', description: 'Tamizar harina y mezclar suavemente.', durationMin: 2 },
+                { order: 4, title: 'Hornear', description: 'Hornear a 180°C por 20-25 minutos.', durationMin: 25 },
+            ],
+        },
+        {
+            title: 'Ensalada César Clásica',
+            description: 'Con pollo, crutones y salsa César casera.',
+            imageUrl: 'https://cdn.pixabay.com/photo/2017/02/15/10/39/salad-2068220_640.jpg',
+            difficulty: Difficulty.MEDIUM,
+            prepTimeMinutes: 20,
+            cookTimeMinutes: 10,
+            servings: 2,
+            tags: ['ensalada', 'saludable', 'entrante'],
+            author: getUser('anacocina'),
+            meal: getMeal('Ensalada César'),
+            ingredients: [
+                { ingredient: ingredients['Pechuga de pollo'], quantity: 1, unit: Unit.UNIT, notes: 'a la plancha', order: 1 },
+                { ingredient: ingredients['Lechuga'], quantity: 1, unit: Unit.UNIT, notes: 'tipo romana', order: 2 },
+                { ingredient: ingredients['Queso parmesano'], quantity: 50, unit: Unit.GRAM, notes: 'laminado', order: 3 },
+                { ingredient: ingredients['Huevo'], quantity: 1, unit: Unit.UNIT, notes: 'para salsa', order: 4 },
+                { ingredient: ingredients['Ajo'], quantity: 1, unit: Unit.UNIT, notes: 'diente', order: 5 },
+                { ingredient: ingredients['Limón'], quantity: 1, unit: Unit.UNIT, notes: 'jugo', order: 6 },
+                { ingredient: ingredients['Aceite de oliva'], quantity: 100, unit: Unit.MILLILITER, notes: '', order: 7 },
+            ],
+            steps: [
+                { order: 1, title: 'Preparar pollo', description: 'Cocinar pechuga a la plancha.', durationMin: 10 },
+                { order: 2, title: 'Hacer crutones', description: 'Tostar cubos de pan con aceite.', durationMin: 5 },
+                { order: 3, title: 'Salsa César', description: 'Licuar huevo, ajo, limón, queso y aceite.', durationMin: 5 },
+                { order: 4, title: 'Montar', description: 'Mezclar lechuga, pollo, crutones, salsa y queso.', durationMin: 5 },
+            ],
+        },
+        {
+            title: 'Batido Energético de Frutos Rojos',
+            description: 'Refrescante y antioxidante, ideal para el desayuno.',
+            imageUrl: 'https://cdn.pixabay.com/photo/2016/02/10/15/47/smoothie-1191855_640.jpg',
+            difficulty: Difficulty.EASY,
+            prepTimeMinutes: 5,
+            cookTimeMinutes: 0,
+            servings: 2,
+            tags: ['batido', 'vegano', 'rápido'],
+            author: getUser('carlosverde'),
+            meal: getMeal('Batido de Frutos Rojos'),
+            ingredients: [
+                { ingredient: ingredients['Fresas'], quantity: 100, unit: Unit.GRAM, notes: 'congeladas', order: 1 },
+                { ingredient: ingredients['Arándanos'], quantity: 100, unit: Unit.GRAM, notes: 'congelados', order: 2 },
+                { ingredient: ingredients['Yogur griego'], quantity: 150, unit: Unit.GRAM, notes: 'natural', order: 3 },
+                { ingredient: ingredients['Leche'], quantity: 200, unit: Unit.MILLILITER, notes: 'vegetal opcional', order: 4 },
+                { ingredient: ingredients['Miel'], quantity: 1, unit: Unit.TABLESPOON, notes: 'o sirope de agave', order: 5 },
+            ],
+            steps: [
+                { order: 1, title: 'Licuar', description: 'Procesar todos los ingredientes.', durationMin: 2 },
+                { order: 2, title: 'Servir', description: 'Verter en vasos.', durationMin: 1 },
+            ],
         },
     ]
 
-    for (const data of recipes) {
-        await prisma.recipe.create({ data })
+    const createdRecipes = []
+    for (const rec of recipesData) {
+        const recipe = await prisma.recipe.create({
+            data: {
+                title: rec.title,
+                description: rec.description,
+                imageUrl: rec.imageUrl,
+                isPublic: true,
+                difficulty: rec.difficulty,
+                prepTimeMinutes: rec.prepTimeMinutes,
+                cookTimeMinutes: rec.cookTimeMinutes,
+                servings: rec.servings,
+                tags: rec.tags,
+                author: { connect: { id: rec.author.id } },
+                meal: { connect: { id: rec.meal.id } },
+                ingredients: {
+                    create: rec.ingredients.map(ing => ({
+                        quantity: ing.quantity,
+                        unit: ing.unit,
+                        notes: ing.notes,
+                        order: ing.order,
+                        ingredient: { connect: { id: ing.ingredient.id } }
+                    }))
+                },
+                steps: {
+                    create: rec.steps.map(step => ({
+                        order: step.order,
+                        title: step.title,
+                        description: step.description,
+                        durationMin: step.durationMin,
+                    }))
+                }
+            }
+        })
+        createdRecipes.push(recipe)
     }
+
+    return createdRecipes
 }

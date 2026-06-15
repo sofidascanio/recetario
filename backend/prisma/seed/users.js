@@ -1,41 +1,52 @@
-export async function seedUsers(prisma) {
-    const admin = await prisma.user.upsert({
-        where: { email: 'admin@recetario.com' },
-        update: {},
-        create: {
-        email: 'admin@recetario.com',
-        username: 'admin',
-        displayName: 'Administrador',
-        passwordHash: 'placeholder_hash',
-        bio: 'Cuenta administradora del sistema.',
-        isVerified: true,
-        },
-    })
+export async function createUsers(prisma) {
+    console.log('Creando usuarios...')
 
-    const chef = await prisma.user.upsert({
-        where: { email: 'chef.maria@recetario.com' },
-        update: {},
-        create: {
-        email: 'chef.maria@recetario.com',
-        username: 'chef_maria',
-        displayName: 'María González',
-        passwordHash: 'placeholder_hash',
-        bio: 'Cocinera apasionada. Especialista en cocina mediterránea y pastelería.',
-        isVerified: true,
+    const usersData = [
+        {
+            email: 'ana.cocinera@example.com',
+            username: 'anacocina',
+            displayName: 'Ana García',
+            bio: 'Amante de la cocina casera y saludable 🥑',
+            isVerified: true,
+            avatarUrl: 'https://api.dicebear.com/9.x/avataaars/svg?seed=Ana',
         },
-    })
-
-    const home = await prisma.user.upsert({
-        where: { email: 'juan.perez@recetario.com' },
-        update: {},
-        create: {
-        email: 'juan.perez@recetario.com',
-        username: 'juanperez',
-        displayName: 'Juan Pérez',
-        passwordHash: 'placeholder_hash',
-        bio: 'Cocinero amateur. Me gustan los asados y las empanadas.',
+        {
+            email: 'chef.juan@example.com',
+            username: 'chefjuan',
+            displayName: 'Juan Pérez',
+            bio: 'Chef profesional especializado en cocina mediterránea',
+            isVerified: true,
+            avatarUrl: 'https://api.dicebear.com/9.x/avataaars/svg?seed=Juan',
         },
-    })
+        {
+            email: 'maria.sweets@example.com',
+            username: 'mariadulce',
+            displayName: 'María López',
+            bio: 'Repostería creativa sin gluten',
+            isVerified: false,
+            avatarUrl: 'https://api.dicebear.com/9.x/avataaars/svg?seed=Maria',
+        },
+        {
+            email: 'carlos.veggie@example.com',
+            username: 'carlosverde',
+            displayName: 'Carlos Verde',
+            bio: 'Cocina vegetariana y vegana 🌱',
+            isVerified: true,
+            avatarUrl: 'https://api.dicebear.com/9.x/avataaars/svg?seed=Carlos',
+        },
+    ]
 
-    return { admin, chef, home }
+    const users = []
+    for (const data of usersData) {
+        const user = await prisma.user.upsert({
+            where: { email: data.email },
+            update: {},
+            create: {
+                ...data,
+                passwordHash: null,
+            },
+        })
+        users.push(user)
+    }
+    return users
 }
