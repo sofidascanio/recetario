@@ -71,14 +71,14 @@ export default function EditProfilePage() {
 
     return (
         <div className={styles.page}>
-            <div className={styles.container}>
 
                 <div className={styles.header}>
                     <button className={styles.backBtn}
                             onClick={() => navigate(-1)}
                             type="button">
-                        ← Volver
+                        Volver
                     </button>
+                    <span className={styles.headerDivider} aria-hidden="true" />
                     <h1 className={styles.title}>Editar perfil</h1>
                 </div>
 
@@ -108,16 +108,14 @@ export default function EditProfilePage() {
                         <label className={styles.label} htmlFor="displayName">
                             Nombre
                         </label>
-                        <input
-                            id="displayName"
-                            name="displayName"
-                            type="text"
-                            className={styles.input}
-                            value={form.displayName}
-                            onChange={handleChange}
-                            placeholder={user?.username}
-                            maxLength={50}
-                        />
+                        <input  id="displayName"
+                                name="displayName"
+                                type="text"
+                                className={styles.input}
+                                value={form.displayName}
+                                onChange={handleChange}
+                                placeholder={user?.username}
+                                maxLength={50}/>
                         <p className={styles.hint}>
                             Si no completas este campo se mostrara tu nombre de usuario.
                         </p>
@@ -128,16 +126,14 @@ export default function EditProfilePage() {
                         <label className={styles.label} htmlFor="bio">
                             Biografía
                         </label>
-                        <textarea
-                            id="bio"
-                            name="bio"
-                            className={styles.textarea}
-                            value={form.bio}
-                            onChange={handleChange}
-                            placeholder="Conta un poco sobre vos y tu estilo de cocina..."
-                            rows={4}
-                            maxLength={300}
-                        />
+                        <textarea id="bio"
+                                name="bio"
+                                className={styles.textarea}
+                                value={form.bio}
+                                onChange={handleChange}
+                                placeholder="Conta un poco sobre vos y tu estilo de cocina..."
+                                rows={4}
+                                maxLength={300}/>
                         <p className={styles.charCount}>
                             {form.bio.length}/300
                         </p>
@@ -159,19 +155,15 @@ export default function EditProfilePage() {
 
                     {/* acciones */}
                     <div className={styles.actions}>
-                        <button
-                            type="button"
-                            className={styles.cancelBtn}
-                            onClick={() => navigate(-1)}
-                            disabled={saving}
-                        >
+                        <button type="button"
+                                className={styles.cancelBtn}
+                                onClick={() => navigate(-1)}
+                                disabled={saving}>
                             Cancelar
                         </button>
-                        <button
-                            type="submit"
-                            className={styles.saveBtn}
-                            disabled={saving}
-                        >
+                        <button type="submit"
+                                className={styles.saveBtn}
+                                disabled={saving}>
                             {saving
                                 ? <><span className={styles.spinner} /> Guardando...</>
                                 : '✓ Guardar cambios'
@@ -180,7 +172,6 @@ export default function EditProfilePage() {
                     </div>
 
                 </form>
-            </div>
         </div>
     )
 }

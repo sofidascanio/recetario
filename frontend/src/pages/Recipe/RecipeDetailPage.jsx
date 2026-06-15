@@ -16,6 +16,7 @@ const CATEGORY_LABEL = {
     SNACK: 'Snack',
     DESSERT: 'Postre',
     DRINK: 'Bebida',
+    APPETIZER: 'Entrada'
 }
 
 const DIFFICULTY_LABEL = {
