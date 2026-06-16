@@ -185,7 +185,7 @@ export default function ProfilePage() {
                                 ? 'Todavía no publicaste ninguna receta.'
                                 : 'Este usuario no tiene recetas públicas.'
                         )
-                        : 'Todavía no guardaste ninguna receta. Explorá el feed y guarda las que te gusten.'
+                        : 'Todavía no guardaste ninguna receta. Explora el feed y guarda las que te gusten.'
                     }
                 </p>
             )}

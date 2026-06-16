@@ -229,9 +229,9 @@
     border: 1.5px solid var(--color-outline-variant);
     border-radius: 10px;
     background: var(--color-surface-container-lowest);
+    color: var(--color-on-surface);
     font-family: var(--font-sans);
     font-size: 14px;
-    color: var(--color-on-surface);
     cursor: pointer;
     outline: none;
     transition: border-color .15s;
