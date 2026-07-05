@@ -235,7 +235,7 @@ Las rutas marcadas con 🔒 requieren token. Las marcadas con 👤 funcionan con
   "email": "elena@ejemplo.com",
   "username": "elena_cocina",       // 3-20 chars, solo letras/números/guión bajo
   "displayName": "Elena Martínez",  // 2-50 chars
-  "password": "Password123"         // min 8 chars, 1 mayúscula, 1 número
+  "password": "Password1234"         // min 8 chars, 1 mayúscula, 1 número
 }
 
 // Response 201
@@ -249,7 +249,7 @@ Las rutas marcadas con 🔒 requieren token. Las marcadas con 👤 funcionan con
 
 ```json
 // Body
-{ "email": "elena@ejemplo.com", "password": "Password123" }
+{ "username": "elena_cocina", "password": "Password1234" }
 
 // Response 200
 { "user": { ... }, "token": "eyJhbGc..." }
@@ -546,18 +546,18 @@ Todos los errores tienen el mismo formato:
 
 ### Códigos de respuesta
 
-| Código | Significado                           |
-| ------ | ------------------------------------- |
-| 200    | OK                                    |
-| 201    | Creado                                |
-| 204    | Sin contenido (DELETE exitoso)        |
-| 400    | Datos inválidos (validación)          |
-| 401    | No autenticado (falta token o expiró) |
-| 403    | Sin permiso (ej: editar receta ajena) |
-| 404    | Recurso no encontrado                 |
-| 409    | Conflicto (ej: email ya registrado)   |
-| 500    | Error interno del servidor            |
-| 503    | Servicio no disponible (ej: DB caída) |
+| Código | Significado                                    |
+| ------ | ---------------------------------------------- |
+| 200    | OK                                             |
+| 201    | Creado                                         |
+| 204    | Sin contenido (DELETE exitoso)                 |
+| 400    | Datos inválidos (validación)                   |
+| 401    | No autenticado (falta token o expiró)          |
+| 403    | Sin permiso (ej: editar receta ajena)          |
+| 404    | Recurso no encontrado                          |
+| 409    | Conflicto (ej: email o username ya registrado) |
+| 500    | Error interno del servidor                     |
+| 503    | Servicio no disponible (ej: DB caída)          |
 
 ---
 

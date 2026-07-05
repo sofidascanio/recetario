@@ -1,5 +1,11 @@
+import bcrypt from 'bcryptjs'
+
+const DEFAULT_PASSWORD = 'Password1234'
+
 export async function createUsers(prisma) {
     console.log('Creando usuarios...')
+
+    const hashedPassword = await bcrypt.hash(DEFAULT_PASSWORD, 10)
 
     const usersData = [
         {
@@ -43,7 +49,7 @@ export async function createUsers(prisma) {
             update: {},
             create: {
                 ...data,
-                passwordHash: null,
+                passwordHash: hashedPassword,
             },
         })
         users.push(user)

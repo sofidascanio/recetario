@@ -4,9 +4,9 @@ import { useAuth } from '../../hooks/useAuth.js'
 import styles from './AuthPage.module.css'
 
 export default function LoginPage() {
-    const { login }   = useAuth()
-    const navigate    = useNavigate()
-    const [error, setError]     = useState(null)
+    const { login } = useAuth()
+    const navigate = useNavigate()
+    const [error, setError]  = useState(null)
     const [loading, setLoading] = useState(false)
 
     async function handleSubmit(e) {
@@ -17,7 +17,7 @@ export default function LoginPage() {
         const form = new FormData(e.target)
 
         try {
-            await login(form.get('email'), form.get('password'))
+            await login(form.get('username'), form.get('password'))
             navigate('/', { replace: true })
         } catch (err) {
             setError(err?.error || 'Error al iniciar sesión')
@@ -40,13 +40,13 @@ export default function LoginPage() {
 
                 <form onSubmit={handleSubmit} className={styles.form}>
                     <div className={styles.field}>
-                        <label htmlFor="email">Email</label>
-                        <input id="email"
-                            name="email"
-                            type="email"
-                            autoComplete="email"
+                        <label htmlFor="username">Usuario</label>
+                        <input id="username"
+                            name="username"
+                            type="text"
+                            autoComplete="username"
                             required
-                            placeholder="tu@email.com"
+                            placeholder="tu_usuario"
                         />
                     </div>
 

@@ -49,23 +49,22 @@ export async function register({ email, username, displayName, password }) {
 }
 
 // Login
-export async function login({ email, password }) {
+export async function login({ username, password }) {
     const user = await prisma.user.findUnique({
-        where: { email },
+        where: { username },
     })
 
     if (!user || !user.passwordHash) {
-        throw new UnauthorizedError('Email o contraseña incorrectos')
+        throw new UnauthorizedError('Usuario o contraseña incorrectos')
     }
 
     const isValid = await bcrypt.compare(password, user.passwordHash)
     if (!isValid) {
-        throw new UnauthorizedError('Email o contraseña incorrectos')
+        throw new UnauthorizedError('Usuario o contraseña incorrectos')
     }
 
     const { passwordHash: _, ...userWithoutPassword } = user
     const token = generateToken(user.id)
-
     return { user: userWithoutPassword, token }
 }
 
